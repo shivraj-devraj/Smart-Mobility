@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Keep the directory structure while excluding generated data and model artifacts.
+data/processed/*
+data/output/*
+models/*
+
+!data/raw/real/
+!data/raw/real/*
+!data/raw/synthetic/
+!data/raw/synthetic/*
+!data/processed/.gitkeep
+!data/output/.gitkeep
+!models/.gitkeep
+
+node_modules/
+frontend/dist/

@@ -1,0 +1,506 @@
+{
+  "artifact_type": "reproducible_spark_random_forest_specification",
+  "native_spark_pipeline_model": false,
+  "model_class": "RandomForestClassifier",
+  "classifier": {
+    "numTrees": 20,
+    "maxDepth": 5,
+    "seed": 42,
+    "labelCol": "label",
+    "featuresCol": "features",
+    "predictionCol": "prediction",
+    "totalNumNodes": 546,
+    "feature_vector_dimension": 61
+  },
+  "features": {
+    "numeric": [
+      "traffic_volume",
+      "average_speed",
+      "travel_time_index",
+      "day_of_week"
+    ],
+    "categorical": [
+      "corridor",
+      "area",
+      "road_intersection",
+      "weather",
+      "roadwork",
+      "day_type"
+    ],
+    "boolean": [
+      "festival_flag",
+      "holiday_flag"
+    ],
+    "feature_count": 12,
+    "vector_dimension": 61
+  },
+  "target": {
+    "column": "congestion_class",
+    "classes": [
+      "High",
+      "Low",
+      "Medium"
+    ],
+    "class_mapping": {
+      "High": 0,
+      "Low": 1,
+      "Medium": 2
+    }
+  },
+  "training": {
+    "cutoff_date": "2024-01-31",
+    "training_rows": 7145,
+    "testing_rows": 1791,
+    "input_sha256": "5dc26040a0ee5103254f74fbaed7629b9b5a3c6d2a464ee322b5fab04f989e94"
+  },
+  "evaluation": {
+    "Accuracy": 0.9034059184812954,
+    "Weighted Precision": 0.9034695970103865,
+    "Weighted Recall": 0.9034059184812954,
+    "F1 Score": 0.8992087260101238
+  },
+  "grouped_feature_importances": {
+    "traffic_volume": 0.502176,
+    "travel_time_index": 0.193824,
+    "area": 0.124284,
+    "road_intersection": 0.066804,
+    "corridor": 0.065991,
+    "average_speed": 0.039955,
+    "weather": 0.002407,
+    "day_type": 0.001809,
+    "day_of_week": 0.001328,
+    "festival_flag": 0.000711,
+    "roadwork": 0.000418,
+    "holiday_flag": 0.000294
+  },
+  "vector_feature_importances": [
+    {
+      "vector_index": 0,
+      "feature": "traffic_volume",
+      "group": "traffic_volume",
+      "type": "numeric",
+      "importance": 0.502176
+    },
+    {
+      "vector_index": 1,
+      "feature": "average_speed",
+      "group": "average_speed",
+      "type": "numeric",
+      "importance": 0.039955
+    },
+    {
+      "vector_index": 2,
+      "feature": "travel_time_index",
+      "group": "travel_time_index",
+      "type": "numeric",
+      "importance": 0.193824
+    },
+    {
+      "vector_index": 3,
+      "feature": "day_of_week",
+      "group": "day_of_week",
+      "type": "numeric",
+      "importance": 0.001328
+    },
+    {
+      "vector_index": 4,
+      "feature": "corridor=Electronic City | Hosur Road",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.025005
+    },
+    {
+      "vector_index": 5,
+      "feature": "corridor=Electronic City | Silk Board Junction",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 3.4e-05
+    },
+    {
+      "vector_index": 6,
+      "feature": "corridor=Hebbal | Ballari Road",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 7,
+      "feature": "corridor=Hebbal | Hebbal Flyover",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.000179
+    },
+    {
+      "vector_index": 8,
+      "feature": "corridor=Indiranagar | 100 Feet Road",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 9,
+      "feature": "corridor=Indiranagar | CMH Road",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.00213
+    },
+    {
+      "vector_index": 10,
+      "feature": "corridor=Jayanagar | Jayanagar 4th Block",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 11,
+      "feature": "corridor=Jayanagar | South End Circle",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 12,
+      "feature": "corridor=Koramangala | Sarjapur Road",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.000141
+    },
+    {
+      "vector_index": 13,
+      "feature": "corridor=Koramangala | Sony World Junction",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.013279
+    },
+    {
+      "vector_index": 14,
+      "feature": "corridor=M.G. Road | Anil Kumble Circle",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.000914
+    },
+    {
+      "vector_index": 15,
+      "feature": "corridor=M.G. Road | Trinity Circle",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.007886
+    },
+    {
+      "vector_index": 16,
+      "feature": "corridor=Whitefield | ITPL Main Road",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.001632
+    },
+    {
+      "vector_index": 17,
+      "feature": "corridor=Whitefield | Marathahalli Bridge",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.002209
+    },
+    {
+      "vector_index": 18,
+      "feature": "corridor=Yeshwanthpur | Tumkur Road",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.011064
+    },
+    {
+      "vector_index": 19,
+      "feature": "corridor=Yeshwanthpur | Yeshwanthpur Circle",
+      "group": "corridor",
+      "type": "categorical_one_hot",
+      "importance": 0.001518
+    },
+    {
+      "vector_index": 20,
+      "feature": "corridor=<unseen_or_invalid>",
+      "group": "corridor",
+      "type": "categorical_one_hot_keep",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 21,
+      "feature": "area=Electronic City",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.035248
+    },
+    {
+      "vector_index": 22,
+      "feature": "area=Hebbal",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 23,
+      "feature": "area=Indiranagar",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.003025
+    },
+    {
+      "vector_index": 24,
+      "feature": "area=Jayanagar",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.000433
+    },
+    {
+      "vector_index": 25,
+      "feature": "area=Koramangala",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.024382
+    },
+    {
+      "vector_index": 26,
+      "feature": "area=M.G. Road",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.001254
+    },
+    {
+      "vector_index": 27,
+      "feature": "area=Whitefield",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.012219
+    },
+    {
+      "vector_index": 28,
+      "feature": "area=Yeshwanthpur",
+      "group": "area",
+      "type": "categorical_one_hot",
+      "importance": 0.047723
+    },
+    {
+      "vector_index": 29,
+      "feature": "area=<unseen_or_invalid>",
+      "group": "area",
+      "type": "categorical_one_hot_keep",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 30,
+      "feature": "road_intersection=100 Feet Road",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.000327
+    },
+    {
+      "vector_index": 31,
+      "feature": "road_intersection=Anil Kumble Circle",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.005923
+    },
+    {
+      "vector_index": 32,
+      "feature": "road_intersection=Ballari Road",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 33,
+      "feature": "road_intersection=CMH Road",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 34,
+      "feature": "road_intersection=Hebbal Flyover",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.000227
+    },
+    {
+      "vector_index": 35,
+      "feature": "road_intersection=Hosur Road",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.002336
+    },
+    {
+      "vector_index": 36,
+      "feature": "road_intersection=ITPL Main Road",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 37,
+      "feature": "road_intersection=Jayanagar 4th Block",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 38,
+      "feature": "road_intersection=Marathahalli Bridge",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.006543
+    },
+    {
+      "vector_index": 39,
+      "feature": "road_intersection=Sarjapur Road",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.003481
+    },
+    {
+      "vector_index": 40,
+      "feature": "road_intersection=Silk Board Junction",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.016836
+    },
+    {
+      "vector_index": 41,
+      "feature": "road_intersection=Sony World Junction",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.020313
+    },
+    {
+      "vector_index": 42,
+      "feature": "road_intersection=South End Circle",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 43,
+      "feature": "road_intersection=Trinity Circle",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 44,
+      "feature": "road_intersection=Tumkur Road",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.010574
+    },
+    {
+      "vector_index": 45,
+      "feature": "road_intersection=Yeshwanthpur Circle",
+      "group": "road_intersection",
+      "type": "categorical_one_hot",
+      "importance": 0.000244
+    },
+    {
+      "vector_index": 46,
+      "feature": "road_intersection=<unseen_or_invalid>",
+      "group": "road_intersection",
+      "type": "categorical_one_hot_keep",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 47,
+      "feature": "weather=Clear",
+      "group": "weather",
+      "type": "categorical_one_hot",
+      "importance": 0.000797
+    },
+    {
+      "vector_index": 48,
+      "feature": "weather=Fog",
+      "group": "weather",
+      "type": "categorical_one_hot",
+      "importance": 0.000363
+    },
+    {
+      "vector_index": 49,
+      "feature": "weather=Overcast",
+      "group": "weather",
+      "type": "categorical_one_hot",
+      "importance": 0.000478
+    },
+    {
+      "vector_index": 50,
+      "feature": "weather=Rain",
+      "group": "weather",
+      "type": "categorical_one_hot",
+      "importance": 0.000291
+    },
+    {
+      "vector_index": 51,
+      "feature": "weather=Windy",
+      "group": "weather",
+      "type": "categorical_one_hot",
+      "importance": 0.000478
+    },
+    {
+      "vector_index": 52,
+      "feature": "weather=<unseen_or_invalid>",
+      "group": "weather",
+      "type": "categorical_one_hot_keep",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 53,
+      "feature": "roadwork=No",
+      "group": "roadwork",
+      "type": "categorical_one_hot",
+      "importance": 9.8e-05
+    },
+    {
+      "vector_index": 54,
+      "feature": "roadwork=Yes",
+      "group": "roadwork",
+      "type": "categorical_one_hot",
+      "importance": 0.00032
+    },
+    {
+      "vector_index": 55,
+      "feature": "roadwork=<unseen_or_invalid>",
+      "group": "roadwork",
+      "type": "categorical_one_hot_keep",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 56,
+      "feature": "day_type=Weekday",
+      "group": "day_type",
+      "type": "categorical_one_hot",
+      "importance": 0.000375
+    },
+    {
+      "vector_index": 57,
+      "feature": "day_type=Weekend",
+      "group": "day_type",
+      "type": "categorical_one_hot",
+      "importance": 0.001434
+    },
+    {
+      "vector_index": 58,
+      "feature": "day_type=<unseen_or_invalid>",
+      "group": "day_type",
+      "type": "categorical_one_hot_keep",
+      "importance": 0.0
+    },
+    {
+      "vector_index": 59,
+      "feature": "festival_flag",
+      "group": "festival_flag",
+      "type": "boolean",
+      "importance": 0.000711
+    },
+    {
+      "vector_index": 60,
+      "feature": "holiday_flag",
+      "group": "holiday_flag",
+      "type": "boolean",
+      "importance": 0.000294
+    }
+  ],
+  "persistence_note": "Lightweight reproducible specification; native Spark PipelineModel persistence was not used due to Windows Hadoop/winutils filesystem limitations."
+}

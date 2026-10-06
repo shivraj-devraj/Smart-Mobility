@@ -1,0 +1,3 @@
+holiday_flag,record_count,average_traffic_volume,average_speed,average_congestion_level,high_congestion_count,high_congestion_percentage
+False,8541,29237.7794169301,39.44630134930107,80.80568294362723,4477,52.41774967802365
+True,395,29198.61265822785,39.471765736979606,81.08525062021675,198,50.12658227848101

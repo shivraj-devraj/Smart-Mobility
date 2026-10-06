@@ -1,0 +1,17 @@
+{
+  "date_format": "yyyy-MM-dd",
+  "congestion_classification": {
+    "basis": "Observed Congestion Level distribution from the validated real dataset",
+    "low_max_exclusive": 60.0,
+    "medium_max_exclusive": 90.0,
+    "rules": {
+      "Low": "Congestion Level < 60.0",
+      "Medium": "60.0 <= Congestion Level < 90.0",
+      "High": "Congestion Level >= 90.0"
+    }
+  },
+  "missing_value_handling": {
+    "policy": "preserve",
+    "description": "Do not fill, drop, or replace missing values. Derived congestion_class remains null when Congestion Level is null."
+  }
+}

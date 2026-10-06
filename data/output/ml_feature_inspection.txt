@@ -1,0 +1,111 @@
+PHASE 6A - ML FEATURE INSPECTION AND PREPARATION
+=================================================
+
+Scope: inspection and preprocessing design only.
+No MLlib estimator was fit, no split was created, and no predictions or evaluation were performed.
+
+DATASET
+-------
+Source: E:\BDA project\data\processed\integrated_traffic_data.csv
+Rows: 8936
+Date range: 2022-01-01 to 2024-08-09
+Schema columns: ['date', 'area', 'road_intersection', 'corridor', 'traffic_volume', 'average_speed', 'travel_time_index', 'congestion_level', 'congestion_class', 'weather', 'roadwork', 'day_of_week', 'day_type', 'festival_flag', 'festival_name', 'holiday_flag']
+Spark schema: struct<date:date,area:string,road_intersection:string,corridor:string,traffic_volume:double,average_speed:double,travel_time_index:double,congestion_level:double,congestion_class:string,weather:string,roadwork:string,day_of_week:int,day_type:string,festival_flag:boolean,festival_name:string,holiday_flag:boolean>
+
+TARGET DISTRIBUTION
+------------------
+Target column: congestion_class
+Distinct target classes: ['High', 'Low', 'Medium']
+Low: count=1947, percentage=21.7883%
+Medium: count=2314, percentage=25.8953%
+High: count=4675, percentage=52.3165%
+
+AVAILABLE FEATURES
+------------------
+Numeric: ['traffic_volume', 'average_speed', 'travel_time_index', 'congestion_level']
+Categorical: ['corridor', 'area', 'road_intersection', 'weather', 'roadwork', 'day_type']
+Temporal/derived: ['day_of_week', 'festival_flag', 'holiday_flag']
+
+EXCLUDED FEATURES AND LEAKAGE ANALYSIS
+--------------------------------------
+congestion_level: Target leakage: congestion_class was derived directly from this field during preprocessing.
+congestion_class: The target itself; it must never be an input feature.
+festival_name: Excluded from the initial set because it is a sparse calendar label and duplicates the festival indicator semantics; revisit only with a documented encoding decision.
+date: Excluded as a raw identifier; derive temporal features deliberately instead of using the date string.
+
+The target congestion_class was created from congestion_level during preprocessing.
+Using congestion_level would expose the rule used to create the target and cause direct target leakage.
+The default model feature set therefore excludes congestion_level.
+No other available field was identified as a direct representation of congestion_class.
+
+CATEGORICAL CARDINALITIES
+-------------------------
+corridor: 16 distinct values
+area: 8 distinct values
+road_intersection: 16 distinct values
+weather: 5 distinct values
+roadwork: 2 distinct values
+day_type: 2 distinct values
+
+NULL COUNTS
+-----------
+date: 0
+area: 0
+road_intersection: 0
+corridor: 0
+traffic_volume: 0
+average_speed: 0
+travel_time_index: 0
+congestion_level: 0
+congestion_class: 0
+weather: 0
+roadwork: 0
+day_of_week: 0
+day_type: 0
+festival_flag: 0
+festival_name: 8541
+holiday_flag: 0
+
+NUMERIC SUMMARIES (ALL AVAILABLE NUMERIC FIELDS)
+------------------------------------------------
+congestion_level is shown for inspection but remains excluded from the proposed model feature set.
+summary=count, traffic_volume=8936, average_speed=8936, travel_time_index=8936, congestion_level=8936
+summary=mean, traffic_volume=29236.04811996419, average_speed=39.44742695730617, travel_time_index=1.3755535780105825, congestion_level=80.81804073595632
+summary=stddev, traffic_volume=13001.808801240219, average_speed=10.707243504178388, travel_time_index=0.16531908064704587, congestion_level=23.53318166879181
+summary=min, traffic_volume=4233.0, average_speed=20.0, travel_time_index=1.0000385482661114, congestion_level=5.160279008043586
+summary=max, traffic_volume=72039.0, average_speed=89.79084251025756, travel_time_index=1.5, congestion_level=100.0
+
+PROPOSED INITIAL FEATURE SET
+----------------------------
+['traffic_volume', 'average_speed', 'travel_time_index', 'corridor', 'area', 'road_intersection', 'weather', 'roadwork', 'day_of_week', 'day_type', 'festival_flag', 'holiday_flag']
+
+UNAVAILABLE FEATURES
+--------------------
+- road_capacity_utilization
+- incident_reports
+- environmental_impact
+- public_transport_usage
+- traffic_signal_compliance
+- parking_usage
+- pedestrian_and_cyclist_count
+- hour
+- direction
+- GPS coordinates
+- live traffic features
+- FASTag features
+- signal-event features
+
+PROPOSED SPARK MLLIB PREPROCESSING
+----------------------------------
+1. StringIndexer for categorical features with handleInvalid='keep'.
+2. OneHotEncoder for indexed categorical features.
+3. VectorAssembler for encoded categorical, numeric, and temporal/boolean feature columns.
+4. StringIndexer for congestion_class as the eventual label.
+5. StandardScaler may be considered for scale-sensitive estimators; defer the choice until model selection.
+No pipeline is fitted or saved in Phase 6A.
+
+RECOMMENDED SPLIT STRATEGY
+--------------------------
+Use a chronological split for the historical batch dataset: earlier dates for training and later dates for testing.
+This better represents forecasting future traffic and avoids allowing later observations to inform the past.
+A random split may be used only as a secondary sensitivity check because records are date-correlated and corridor-repeated.

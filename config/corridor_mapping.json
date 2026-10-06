@@ -1,0 +1,12 @@
+{
+  "mapping_required": false,
+  "rule_type": "composite_identifier",
+  "source_fields": [
+    "area",
+    "road_intersection"
+  ],
+  "separator": " | ",
+  "rule": "corridor = area + ' | ' + road_intersection",
+  "direction": null,
+  "notes": "No semantic corridor mapping, direction, coordinates, GPS, or new road names are available in the source. Preserve the observed area and road/intersection values in the composite identifier."
+}

@@ -1,0 +1,30 @@
+PHASE 7A - RULE-BASED TRAFFIC ADVISORY ENGINE
+===============================================
+
+Input dataset: E:\BDA project\data\processed\integrated_traffic_data.csv
+Output dataset: E:\BDA project\data\output\advisory_output.csv
+Total advisory records: 8936
+
+Advisory level distribution: {'High': 4675, 'Moderate': 2314, 'Normal': 1947}
+Congestion class distribution: {'High': 4675, 'Low': 1947, 'Medium': 2314}
+Festival-related advisories: 323
+Holiday-related advisories: 395
+Roadwork-related advisories: 882
+Adverse-weather advisories: 1786
+
+Validation results:
+- input_row_count_equals_output_row_count: PASS
+- duplicate_date_corridor_count: PASS
+- null_congestion_class_count: PASS
+- valid_advisory_levels: PASS
+- one_level_per_congestion_class: PASS
+- festival_context_rule: PASS
+- holiday_context_rule: PASS
+- roadwork_context_rule: PASS
+- adverse_weather_context_rule: PASS
+- no_unsupported_output_fields: PASS
+- output_file_exists: PASS
+
+Scope: deterministic batch historical advisories only.
+The engine recommends, considers, prepares, or reviews actions; it does not control traffic infrastructure.
+No live traffic, signal events, FASTag/toll integration, direction, GPS, or hour-level values were invented.

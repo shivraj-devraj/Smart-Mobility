@@ -1,0 +1,183 @@
+date,festival_name,is_festival,is_holiday,day_type
+2024-10-01,None,false,false,Pre-Holiday
+2024-10-02,None,false,true,Normal Day
+2024-10-03,None,false,false,Post-Holiday
+2024-10-04,None,false,false,Friday Evening
+2024-10-05,None,false,false,Normal Day
+2024-10-06,None,false,false,Normal Day
+2024-10-07,None,false,false,Normal Day
+2024-10-08,None,false,false,Normal Day
+2024-10-09,None,false,false,Normal Day
+2024-10-10,None,false,false,Pre-Holiday
+2024-10-11,SYNTHETIC: Dussehra Demonstration,true,true,Festival Day
+2024-10-12,None,false,false,Post-Holiday
+2024-10-13,None,false,false,Normal Day
+2024-10-14,None,false,false,Normal Day
+2024-10-15,None,false,false,Normal Day
+2024-10-16,None,false,false,Normal Day
+2024-10-17,None,false,false,Normal Day
+2024-10-18,None,false,false,Friday Evening
+2024-10-19,None,false,false,Normal Day
+2024-10-20,None,false,false,Normal Day
+2024-10-21,None,false,false,Normal Day
+2024-10-22,None,false,false,Normal Day
+2024-10-23,None,false,false,Normal Day
+2024-10-24,None,false,false,Normal Day
+2024-10-25,None,false,false,Friday Evening
+2024-10-26,None,false,false,Normal Day
+2024-10-27,None,false,false,Normal Day
+2024-10-28,None,false,false,Normal Day
+2024-10-29,None,false,false,Normal Day
+2024-10-30,None,false,false,Normal Day
+2024-10-31,None,false,false,Pre-Holiday
+2024-11-01,SYNTHETIC: Kannada Rajyotsava Demonstration,true,true,Festival Day
+2024-11-02,None,false,false,Post-Holiday
+2024-11-03,None,false,false,Normal Day
+2024-11-04,None,false,false,Normal Day
+2024-11-05,None,false,false,Normal Day
+2024-11-06,None,false,false,Normal Day
+2024-11-07,None,false,false,Normal Day
+2024-11-08,None,false,false,Friday Evening
+2024-11-09,None,false,false,Normal Day
+2024-11-10,None,false,false,Normal Day
+2024-11-11,None,false,false,Normal Day
+2024-11-12,None,false,false,Normal Day
+2024-11-13,None,false,false,Normal Day
+2024-11-14,None,false,false,Normal Day
+2024-11-15,None,false,false,Friday Evening
+2024-11-16,None,false,false,Normal Day
+2024-11-17,None,false,false,Normal Day
+2024-11-18,None,false,false,Normal Day
+2024-11-19,None,false,false,Normal Day
+2024-11-20,None,false,false,Normal Day
+2024-11-21,None,false,false,Normal Day
+2024-11-22,None,false,false,Friday Evening
+2024-11-23,None,false,false,Normal Day
+2024-11-24,None,false,false,Pre-Holiday
+2024-11-25,None,false,true,Normal Day
+2024-11-26,None,false,false,Post-Holiday
+2024-11-27,None,false,false,Normal Day
+2024-11-28,None,false,false,Normal Day
+2024-11-29,None,false,false,Friday Evening
+2024-11-30,None,false,false,Normal Day
+2024-12-01,None,false,false,Normal Day
+2024-12-02,None,false,false,Normal Day
+2024-12-03,None,false,false,Normal Day
+2024-12-04,None,false,false,Normal Day
+2024-12-05,None,false,false,Normal Day
+2024-12-06,None,false,false,Friday Evening
+2024-12-07,None,false,false,Normal Day
+2024-12-08,None,false,false,Normal Day
+2024-12-09,None,false,false,Normal Day
+2024-12-10,None,false,false,Normal Day
+2024-12-11,None,false,false,Normal Day
+2024-12-12,None,false,false,Normal Day
+2024-12-13,None,false,false,Friday Evening
+2024-12-14,None,false,false,Normal Day
+2024-12-15,None,false,false,Normal Day
+2024-12-16,None,false,false,Normal Day
+2024-12-17,None,false,false,Normal Day
+2024-12-18,None,false,false,Normal Day
+2024-12-19,None,false,false,Normal Day
+2024-12-20,None,false,false,Friday Evening
+2024-12-21,None,false,false,Normal Day
+2024-12-22,None,false,false,Normal Day
+2024-12-23,None,false,false,Normal Day
+2024-12-24,None,false,false,Pre-Holiday
+2024-12-25,SYNTHETIC: Christmas Demonstration,true,true,Festival Day
+2024-12-26,None,false,false,Post-Holiday
+2024-12-27,None,false,false,Friday Evening
+2024-12-28,None,false,false,Normal Day
+2024-12-29,None,false,false,Normal Day
+2024-12-30,None,false,false,Normal Day
+2024-12-31,None,false,false,Normal Day
+2025-01-01,None,false,false,Normal Day
+2025-01-02,None,false,false,Normal Day
+2025-01-03,None,false,false,Friday Evening
+2025-01-04,None,false,false,Normal Day
+2025-01-05,None,false,false,Normal Day
+2025-01-06,None,false,false,Normal Day
+2025-01-07,None,false,false,Normal Day
+2025-01-08,None,false,false,Normal Day
+2025-01-09,None,false,false,Normal Day
+2025-01-10,None,false,false,Friday Evening
+2025-01-11,None,false,false,Normal Day
+2025-01-12,None,false,false,Normal Day
+2025-01-13,None,false,false,Pre-Holiday
+2025-01-14,SYNTHETIC: Sankranti Demonstration,true,true,Festival Day
+2025-01-15,None,false,false,Post-Holiday
+2025-01-16,None,false,false,Normal Day
+2025-01-17,None,false,false,Friday Evening
+2025-01-18,None,false,false,Normal Day
+2025-01-19,None,false,false,Normal Day
+2025-01-20,None,false,false,Normal Day
+2025-01-21,None,false,false,Normal Day
+2025-01-22,None,false,false,Normal Day
+2025-01-23,None,false,false,Normal Day
+2025-01-24,None,false,false,Friday Evening
+2025-01-25,None,false,false,Pre-Holiday
+2025-01-26,None,false,true,Normal Day
+2025-01-27,None,false,false,Post-Holiday
+2025-01-28,None,false,false,Normal Day
+2025-01-29,None,false,false,Normal Day
+2025-01-30,None,false,false,Normal Day
+2025-01-31,None,false,false,Friday Evening
+2025-02-01,None,false,false,Normal Day
+2025-02-02,None,false,false,Normal Day
+2025-02-03,None,false,false,Normal Day
+2025-02-04,None,false,false,Normal Day
+2025-02-05,None,false,false,Normal Day
+2025-02-06,None,false,false,Normal Day
+2025-02-07,None,false,false,Friday Evening
+2025-02-08,None,false,false,Normal Day
+2025-02-09,None,false,false,Normal Day
+2025-02-10,None,false,false,Normal Day
+2025-02-11,None,false,false,Normal Day
+2025-02-12,None,false,false,Normal Day
+2025-02-13,None,false,false,Normal Day
+2025-02-14,None,false,false,Friday Evening
+2025-02-15,None,false,false,Normal Day
+2025-02-16,None,false,false,Normal Day
+2025-02-17,None,false,false,Normal Day
+2025-02-18,None,false,false,Normal Day
+2025-02-19,None,false,false,Normal Day
+2025-02-20,None,false,false,Normal Day
+2025-02-21,None,false,false,Friday Evening
+2025-02-22,None,false,false,Normal Day
+2025-02-23,None,false,false,Normal Day
+2025-02-24,None,false,false,Normal Day
+2025-02-25,None,false,false,Pre-Holiday
+2025-02-26,SYNTHETIC: Maha Shivaratri Demonstration,true,true,Festival Day
+2025-02-27,None,false,false,Post-Holiday
+2025-02-28,None,false,false,Friday Evening
+2025-03-01,None,false,false,Normal Day
+2025-03-02,None,false,false,Normal Day
+2025-03-03,None,false,false,Normal Day
+2025-03-04,None,false,false,Normal Day
+2025-03-05,None,false,false,Normal Day
+2025-03-06,None,false,false,Normal Day
+2025-03-07,None,false,false,Friday Evening
+2025-03-08,None,false,false,Normal Day
+2025-03-09,None,false,false,Normal Day
+2025-03-10,None,false,false,Normal Day
+2025-03-11,None,false,false,Normal Day
+2025-03-12,None,false,false,Normal Day
+2025-03-13,None,false,false,Pre-Holiday
+2025-03-14,SYNTHETIC: Holi Demonstration,true,true,Festival Day
+2025-03-15,None,false,false,Post-Holiday
+2025-03-16,None,false,false,Normal Day
+2025-03-17,None,false,false,Normal Day
+2025-03-18,None,false,false,Normal Day
+2025-03-19,None,false,false,Normal Day
+2025-03-20,None,false,false,Normal Day
+2025-03-21,None,false,false,Friday Evening
+2025-03-22,None,false,false,Normal Day
+2025-03-23,None,false,false,Normal Day
+2025-03-24,None,false,false,Normal Day
+2025-03-25,None,false,false,Normal Day
+2025-03-26,None,false,false,Normal Day
+2025-03-27,None,false,false,Normal Day
+2025-03-28,None,false,false,Friday Evening
+2025-03-29,None,false,false,Normal Day
+2025-03-30,None,false,false,Pre-Holiday
+2025-03-31,None,false,true,Normal Day

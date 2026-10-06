@@ -1,0 +1,55 @@
+PHASE 8A - CORE VISUALIZATION SUMMARY
+======================================
+
+All charts are static, reproducible views of historical batch outputs.
+They do not represent real-time traffic and do not invent hourly, directional, GPS, FASTag, or signal-event dimensions.
+
+Visualization: Congestion class distribution
+Source file: E:\BDA project\data\processed\integrated_traffic_data.csv
+Output path: E:\BDA project\data\output\visualizations\congestion_class_distribution.png
+File size: 42936 bytes
+Validation: PASS
+
+Visualization: Top corridors by average congestion
+Source file: E:\BDA project\data\output\top5_average_congestion_corridors.csv
+Output path: E:\BDA project\data\output\visualizations\top5_average_congestion.png
+File size: 55186 bytes
+Validation: PASS
+
+Visualization: Top corridors by high-congestion percentage
+Source file: E:\BDA project\data\output\top5_high_congestion_percentage_corridors.csv
+Output path: E:\BDA project\data\output\visualizations\top5_high_congestion_percentage.png
+File size: 55521 bytes
+Validation: PASS
+
+Visualization: Festival versus non-festival
+Source file: E:\BDA project\data\output\festival_congestion_summary.csv
+Output path: E:\BDA project\data\output\visualizations\festival_vs_nonfestival.png
+File size: 71274 bytes
+Validation: PASS
+
+Visualization: Weekday versus weekend
+Source file: E:\BDA project\data\output\day_type_congestion_summary.csv
+Output path: E:\BDA project\data\output\visualizations\weekday_vs_weekend.png
+File size: 72923 bytes
+Validation: PASS
+
+Visualization: Actual versus predicted congestion
+Source file: E:\BDA project\data\output\prediction_advisory_output.csv
+Output path: E:\BDA project\data\output\visualizations\actual_vs_predicted_confusion_matrix.png
+File size: 46331 bytes
+Validation: PASS
+
+Visualization: Predicted congestion distribution
+Source file: E:\BDA project\data\output\prediction_advisory_output.csv
+Output path: E:\BDA project\data\output\visualizations\predicted_congestion_distribution.png
+File size: 41396 bytes
+Validation: PASS
+
+Visualization: Advisory distribution
+Source file: E:\BDA project\data\output\prediction_advisory_output.csv
+Output path: E:\BDA project\data\output\visualizations\advisory_distribution.png
+File size: 35882 bytes
+Validation: PASS
+
+Overall validation: PASS

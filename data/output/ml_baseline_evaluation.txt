@@ -1,0 +1,60 @@
+PHASE 6B - DECISION TREE BASELINE
+=================================
+
+Input dataset
+E:\BDA project\data\processed\integrated_traffic_data.csv
+Total rows: 8936
+Training rows: 7145
+Testing rows: 1791
+Training date range: 2022-01-01 to 2024-01-31
+Testing date range: 2024-02-01 to 2024-08-09
+Cutoff date: 2024-01-31
+
+Feature list: ['traffic_volume', 'average_speed', 'travel_time_index', 'day_of_week', 'corridor', 'area', 'road_intersection', 'weather', 'roadwork', 'day_type', 'festival_flag', 'holiday_flag']
+Excluded columns and reasons:
+- congestion_level: Excluded because congestion_class was directly derived from it; using it would cause target leakage.
+- congestion_class: The target column; it cannot be used as an input feature.
+- festival_name: Excluded because it is a sparse calendar label and is not part of the specified baseline feature set.
+- date: Excluded because raw dates are not used directly as features.
+
+Target label mapping:
+- High = 0
+- Low = 1
+- Medium = 2
+
+Class distribution - training:
+- Low: count=1557, percentage=21.7915%
+- Medium: count=1859, percentage=26.0182%
+- High: count=3729, percentage=52.1903%
+Class distribution - testing:
+- Low: count=390, percentage=21.7755%
+- Medium: count=455, percentage=25.4048%
+- High: count=946, percentage=52.8197%
+
+Accuracy: 0.919040
+Weighted Precision: 0.919577
+Weighted Recall: 0.919040
+F1 Score: 0.919270
+
+Confusion Matrix
+actual_class,predicted_class,count
+High,High,900
+High,Medium,46
+Low,Low,359
+Low,Medium,31
+Medium,High,44
+Medium,Low,24
+Medium,Medium,387
+
+Native Spark PipelineModel: NOT CREATED (Windows Hadoop NativeIO/access0 limitation)
+Reproducible model specification: E:\BDA project\models\decision_tree_baseline\model_specification.json
+Evaluation report: this file; it contains the metrics and confusion matrix below.
+
+Data quality checks:
+- Training rows + testing rows = total rows: 7145 + 1791 = 8936
+- Target null count: 0
+- Feature null counts: {'traffic_volume': 0, 'average_speed': 0, 'travel_time_index': 0, 'day_of_week': 0, 'corridor': 0, 'area': 0, 'road_intersection': 0, 'weather': 0, 'roadwork': 0, 'day_type': 0, 'festival_flag': 0, 'holiday_flag': 0}
+- Training dates strictly earlier than testing dates: PASS
+- Predictions contain actual and predicted labels: PASS
+- Evaluation metrics in [0, 1]: PASS
+- Model specification exists: PASS

@@ -1,0 +1,147 @@
+{
+  "artifact_type": "reproducible_spark_decision_tree_specification",
+  "native_spark_pipeline_model": false,
+  "model_class": "DecisionTreeClassifier",
+  "classifier": {
+    "maxDepth": 5,
+    "seed": 42,
+    "labelCol": "label",
+    "featuresCol": "features",
+    "predictionCol": "prediction",
+    "numNodes": 31,
+    "depth": 5,
+    "tree": "DecisionTreeClassificationModel: uid=DecisionTreeClassifier_399a1c19ef24, depth=5, numNodes=31, numClasses=3, numFeatures=61\n  If (feature 0 <= 26632.0)\n   If (feature 0 <= 18010.5)\n    If (feature 0 <= 16625.0)\n     Predict: 1.0\n    Else (feature 0 > 16625.0)\n     If (feature 13 in {0.0})\n      Predict: 1.0\n     Else (feature 13 not in {0.0})\n      Predict: 2.0\n   Else (feature 0 > 18010.5)\n    If (feature 0 <= 24715.0)\n     Predict: 2.0\n    Else (feature 0 > 24715.0)\n     If (feature 0 <= 25654.5)\n      Predict: 2.0\n     Else (feature 0 > 25654.5)\n      If (feature 17 in {0.0})\n       Predict: 2.0\n      Else (feature 17 not in {0.0})\n       Predict: 0.0\n  Else (feature 0 > 26632.0)\n   If (feature 0 <= 28549.5)\n    If (feature 26 in {0.0})\n     Predict: 0.0\n    Else (feature 26 not in {0.0})\n     If (feature 1 <= 31.68530164582022)\n      If (feature 3 <= 5.5)\n       Predict: 0.0\n      Else (feature 3 > 5.5)\n       Predict: 2.0\n     Else (feature 1 > 31.68530164582022)\n      If (feature 1 <= 45.544981175353755)\n       Predict: 2.0\n      Else (feature 1 > 45.544981175353755)\n       Predict: 0.0\n   Else (feature 0 > 28549.5)\n    If (feature 0 <= 29723.0)\n     If (feature 10 in {0.0})\n      Predict: 0.0\n     Else (feature 10 not in {0.0})\n      If (feature 1 <= 32.723903838268484)\n       Predict: 2.0\n      Else (feature 1 > 32.723903838268484)\n       Predict: 0.0\n    Else (feature 0 > 29723.0)\n     Predict: 0.0\n"
+  },
+  "features": {
+    "numeric": [
+      "traffic_volume",
+      "average_speed",
+      "travel_time_index",
+      "day_of_week"
+    ],
+    "categorical": [
+      "corridor",
+      "area",
+      "road_intersection",
+      "weather",
+      "roadwork",
+      "day_type"
+    ],
+    "boolean": [
+      "festival_flag",
+      "holiday_flag"
+    ],
+    "assembler_inputs": [
+      "traffic_volume",
+      "average_speed",
+      "travel_time_index",
+      "day_of_week",
+      "corridor_encoded",
+      "area_encoded",
+      "road_intersection_encoded",
+      "weather_encoded",
+      "roadwork_encoded",
+      "day_type_encoded",
+      "festival_flag",
+      "holiday_flag"
+    ],
+    "excluded": {
+      "congestion_level": "Excluded because congestion_class was directly derived from it; using it would cause target leakage.",
+      "congestion_class": "The target column; it cannot be used as an input feature.",
+      "festival_name": "Excluded because it is a sparse calendar label and is not part of the specified baseline feature set.",
+      "date": "Excluded because raw dates are not used directly as features."
+    }
+  },
+  "preprocessing": {
+    "categorical_indexer": {
+      "handleInvalid": "keep",
+      "stringOrderType": "alphabetAsc",
+      "labels": {
+        "corridor": [
+          "Electronic City | Hosur Road",
+          "Electronic City | Silk Board Junction",
+          "Hebbal | Ballari Road",
+          "Hebbal | Hebbal Flyover",
+          "Indiranagar | 100 Feet Road",
+          "Indiranagar | CMH Road",
+          "Jayanagar | Jayanagar 4th Block",
+          "Jayanagar | South End Circle",
+          "Koramangala | Sarjapur Road",
+          "Koramangala | Sony World Junction",
+          "M.G. Road | Anil Kumble Circle",
+          "M.G. Road | Trinity Circle",
+          "Whitefield | ITPL Main Road",
+          "Whitefield | Marathahalli Bridge",
+          "Yeshwanthpur | Tumkur Road",
+          "Yeshwanthpur | Yeshwanthpur Circle"
+        ],
+        "area": [
+          "Electronic City",
+          "Hebbal",
+          "Indiranagar",
+          "Jayanagar",
+          "Koramangala",
+          "M.G. Road",
+          "Whitefield",
+          "Yeshwanthpur"
+        ],
+        "road_intersection": [
+          "100 Feet Road",
+          "Anil Kumble Circle",
+          "Ballari Road",
+          "CMH Road",
+          "Hebbal Flyover",
+          "Hosur Road",
+          "ITPL Main Road",
+          "Jayanagar 4th Block",
+          "Marathahalli Bridge",
+          "Sarjapur Road",
+          "Silk Board Junction",
+          "Sony World Junction",
+          "South End Circle",
+          "Trinity Circle",
+          "Tumkur Road",
+          "Yeshwanthpur Circle"
+        ],
+        "weather": [
+          "Clear",
+          "Fog",
+          "Overcast",
+          "Rain",
+          "Windy"
+        ],
+        "roadwork": [
+          "No",
+          "Yes"
+        ],
+        "day_type": [
+          "Weekday",
+          "Weekend"
+        ]
+      }
+    },
+    "one_hot_encoder": {
+      "categorySizes": [
+        17,
+        9,
+        17,
+        6,
+        3,
+        3
+      ]
+    },
+    "target_indexer": {
+      "handleInvalid": "error",
+      "stringOrderType": "alphabetAsc",
+      "labels": [
+        "High",
+        "Low",
+        "Medium"
+      ]
+    }
+  },
+  "training": {
+    "cutoff_date": "2024-01-31",
+    "input_sha256": "5dc26040a0ee5103254f74fbaed7629b9b5a3c6d2a464ee322b5fab04f989e94"
+  }
+}

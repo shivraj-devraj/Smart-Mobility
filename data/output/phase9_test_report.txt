@@ -1,0 +1,234 @@
+PHASE 9 - FINAL TEST & VALIDATION REPORT
+=========================================
+
+Validation date: 2026-09-27
+Project: Smart Mobility: Festival & Weekend Travel Surge Prediction and Traffic Advisory System for Bengaluru
+Scope: Final testing and end-to-end validation only. No datasets were regenerated and no Phase 10 work was started.
+
+1. Project Structure
+--------------------
+Status: PASS
+
+All expected implemented-phase folders and files were present:
+- data/raw/real/
+- data/raw/synthetic/
+- data/processed/
+- data/output/
+- models/decision_tree_baseline/
+- src/ingestion/
+- src/preprocessing/
+- src/corridor/
+- src/analytics/
+- src/prediction/
+- src/advisory/
+- src/visualization/
+- dashboard/
+- tests/
+
+Key artifacts present:
+- src/prediction/train_decision_tree.py
+- models/decision_tree_baseline/model_specification.json
+- src/advisory/advisory_engine.py
+- src/visualization/create_visualizations.py
+- dashboard/app.py
+- dashboard/README.md
+
+2. Raw Data Validation
+----------------------
+Status: PASS
+
+Real traffic CSV:
+- File: data/raw/real/Banglore_traffic_Dataset.csv
+- Rows: 8,936
+- Date range: 2022-01-01 to 2024-08-09
+- Schema: Date, Area Name, Road/Intersection Name, Traffic Volume, Average Speed, Travel Time Index, Congestion Level, Road Capacity Utilization, Incident Reports, Environmental Impact, Public Transport Usage, Traffic Signal Compliance, Parking Usage, Pedestrian and Cyclist Count, Weather Conditions, Roadwork and Construction Activity
+- Required nulls: 0
+- Invalid dates: 0
+
+Curated Karnataka calendar:
+- File: data/raw/real/karnataka_holidays_2022_2024.csv
+- Rows: 44
+- Date range: 2022-01-15 to 2024-07-17
+- Schema: date, festival_name, festival_flag, holiday_flag, source
+- Duplicate dates: 0
+- Required nulls: 0
+- Invalid dates: 0
+
+Synthetic development datasets remain separated under data/raw/synthetic/ and are not represented as official live transaction/event data.
+
+3. Processed Data Validation
+----------------------------
+Status: PASS
+
+Validated files:
+- data/processed/real_traffic_preprocessed.csv: 8,936 rows
+- data/processed/real_traffic_corridor_tagged.csv: 8,936 rows
+- data/processed/integrated_traffic_data.csv: 8,936 rows
+
+Checks:
+- Required schemas: PASS
+- Valid dates: PASS
+- Congestion classes exactly Low, Medium, High: PASS
+- Non-null corridor: PASS
+- Required nulls: 0
+- Integrated duplicate (date, corridor) records: 0
+- Integrated date range: 2022-01-01 to 2024-08-09
+
+4. Spark SQL Validation
+-----------------------
+Status: PASS
+
+All nine Phase 5 outputs existed, were non-empty, had valid headers, and passed numeric-range checks:
+- corridor_congestion_summary.csv: 16 rows
+- high_congestion_corridors.csv: 16 rows
+- day_type_congestion_summary.csv: 2 rows
+- festival_congestion_summary.csv: 2 rows
+- holiday_congestion_summary.csv: 2 rows
+- day_of_week_congestion_summary.csv: 7 rows
+- festival_corridor_analysis.csv: 16 rows
+- top5_average_congestion_corridors.csv: 5 rows
+- top5_high_congestion_percentage_corridors.csv: 5 rows
+
+All percentage fields were within 0 to 100.
+
+5. Machine Learning Validation
+------------------------------
+Status: PASS
+
+Artifacts:
+- src/prediction/train_decision_tree.py: present
+- data/output/ml_baseline_evaluation.txt: present
+- models/decision_tree_baseline/model_specification.json: present
+
+The model artifact is explicitly a reproducible specification, not a native Spark PipelineModel. PipelineModel.load() was not attempted.
+
+Specification checks:
+- Artifact type: reproducible_spark_decision_tree_specification
+- Native Spark PipelineModel claimed: false
+- Classifier: DecisionTreeClassifier
+- Target mapping: High = 0, Low = 1, Medium = 2
+- maxDepth: 5
+- seed: 42
+- Chronological cutoff: 2024-01-31
+- Training rows: 7,145
+- Testing rows: 1,791
+
+Validated metrics:
+- Accuracy: 0.919040
+- Weighted Precision: 0.919577
+- Weighted Recall: 0.919040
+- F1 Score: 0.919270
+
+6. Advisory Engine Validation
+------------------------------
+Status: PASS
+
+File: data/output/advisory_output.csv
+- Rows: 8,936
+- Duplicate (date, corridor) records: 0
+- Congestion classes: Low, Medium, High
+- Advisory levels: Normal, Moderate, High
+- Deterministic class mapping: PASS
+  Low -> Normal; Medium -> Moderate; High -> High
+- Festival, holiday, roadwork, and adverse-weather rules: PASS
+- Unsupported live-control behavior claimed: no
+
+7. Prediction-to-Advisory Validation
+------------------------------------
+Status: PASS
+
+File: data/output/prediction_advisory_output.csv
+- Rows: 1,791
+- Test date range: 2024-02-01 to 2024-08-09
+- Actual classes: Low, Medium, High
+- Predicted classes: Low, Medium, High
+- Advisory levels: Normal, Moderate, High
+- Duplicate (date, corridor) records: 0
+- Advisory source is predicted congestion class rather than actual class: PASS
+
+Prediction distribution:
+- High: 944
+- Medium: 464
+- Low: 383
+
+Phase 7B metrics matched Phase 6B:
+- Accuracy: 0.919040
+- Weighted Precision: 0.919577
+- Weighted Recall: 0.919040
+- F1 Score: 0.919270
+
+8. Visualization Validation
+---------------------------
+Status: PASS
+
+All eight PNG files existed and were non-empty:
+- congestion_class_distribution.png
+- top5_average_congestion.png
+- top5_high_congestion_percentage.png
+- festival_vs_nonfestival.png
+- weekday_vs_weekend.png
+- actual_vs_predicted_confusion_matrix.png
+- predicted_congestion_distribution.png
+- advisory_distribution.png
+
+Additional manifest:
+- data/output/visualizations/visualization_summary.txt: present
+
+9. Dashboard Validation
+-----------------------
+Status: PASS
+
+- dashboard/app.py: present
+- dashboard/README.md: present
+- Streamlit dependency in requirements.txt: present
+- Dashboard references validated project outputs only: PASS
+- Historical batch limitation wording: PASS
+- Unsupported GPS, live traffic, FASTag, and signal-event functionality: not implemented
+- Streamlit health check: HTTP 200, body 'ok'
+- Streamlit process after validation: stopped; no background server remains
+
+10. Reproducibility
+-------------------
+Status: PASS
+
+Read-only validation completed without regenerating datasets or changing model configuration. No raw or processed input files were modified. No SparkSession configuration was changed. No synthetic data was generated.
+
+Validation command coverage:
+- Structure and CSV validations: PASS
+- ML metadata and report validation: PASS
+- Advisory output validation: PASS
+- Prediction-to-advisory validation: PASS
+- Visualization artifact validation: PASS
+- Dashboard syntax/data-load validation: PASS
+- Streamlit startup/health validation: PASS
+
+11. Overall Test Summary
+------------------------
+Status: PASS
+
+Total checks: 112
+Passed checks: 112
+Failed checks: 0
+Warnings: 1 (known limitations documented; no execution warnings)
+
+Final project status: PASS - implemented Phases 0-8 validated successfully.
+
+The project clearly distinguishes:
+- historical analysis from live monitoring
+- ML classification from advisory generation
+- prediction-based advisories from actual-label evaluation
+- static visualizations from the interactive Streamlit dashboard
+
+12. Known Limitations
+---------------------
+Status: WARNING
+
+- The project is historical and batch-based, not real-time.
+- No hourly observations are available.
+- Direction, GPS coordinates, FASTag transactions, and traffic-signal event streams are unavailable or not integrated.
+- The Decision Tree evaluation is based on the chronological test period 2024-02-01 to 2024-08-09 and should not be described as a guarantee of future performance.
+- Native Spark PipelineModel persistence is unavailable in this Windows environment because Hadoop Windows JNI persistence fails. The project retains a reproducible model specification instead.
+- Festival and holiday fields use the project's curated Karnataka calendar; it is not presented as an official government dataset.
+- Advisory outputs are deterministic recommendations and do not claim physical traffic-control automation or deployment.
+
+Phase 10 was not started.

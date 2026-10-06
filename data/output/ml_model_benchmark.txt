@@ -1,0 +1,62 @@
+PHASE 4 - ML MODEL BENCHMARK REPORT
+====================================
+
+Random Forest is benchmarked against the existing validated Decision Tree using the same features and chronological test split.
+
+Dataset and Split Configuration:
+--------------------------------
+- Input dataset: E:\BDA project\data\processed\integrated_traffic_data.csv
+- Total rows: 8936
+- Cutoff date: 2024-01-31
+- Training date range: 2022-01-01 to 2024-01-31 (7,145 rows)
+- Testing date range: 2024-02-01 to 2024-08-09 (1,791 rows)
+- Total input features: 12 (vector dimension: 61)
+- Target column: congestion_class (High=0, Low=1, Medium=2)
+
+Model Configurations:
+---------------------
+- Baseline: DecisionTreeClassifier (maxDepth=5, seed=42)
+- Benchmark: RandomForestClassifier (numTrees=20, maxDepth=5, seed=42)
+
+Comparative Evaluation Metrics (Chronological Held-Out Test Set):
+----------------------------------------------------------------
+Metric                   Decision Tree        Random Forest       
+------------------------ -------------------- --------------------
+Accuracy                 0.919040             0.903406            
+Weighted Precision       0.919577             0.903470            
+Weighted Recall          0.919040             0.903406            
+F1 Score                 0.919270             0.899209            
+
+Random Forest Confusion Matrix:
+-------------------------------
+actual_class,predicted_class,count
+High,High,939
+High,Medium,7
+Low,Low,359
+Low,Medium,31
+Medium,High,110
+Medium,Low,25
+Medium,Medium,320
+
+Random Forest Grouped Feature Importances (summed over one-hot components):
+--------------------------------------------------------------------------
+Feature Group                Importance  
+---------------------------- ------------
+traffic_volume               0.502176    
+travel_time_index            0.193824    
+area                         0.124284    
+road_intersection            0.066804    
+corridor                     0.065991    
+average_speed                0.039955    
+weather                      0.002407    
+day_type                     0.001809    
+day_of_week                  0.001328    
+festival_flag                0.000711    
+roadwork                     0.000418    
+holiday_flag                 0.000294    
+
+Persistence & Reproducibility:
+------------------------------
+- Random Forest specification: E:\BDA project\models\random_forest_benchmark\model_specification.json
+- Native Spark PipelineModel: NOT CREATED (Windows Hadoop winutils/JNI limitation)
+- Baseline status: Decision Tree baseline files remain completely unchanged.

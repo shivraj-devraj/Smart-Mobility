@@ -1,0 +1,20 @@
+{
+  "raw_data_immutable": true,
+  "primary_traffic_source": {
+    "type": "real",
+    "path": "data/raw/real/Banglore_traffic_Dataset.csv",
+    "description": "Validated public Bengaluru traffic dataset",
+    "modifiable": false
+  },
+  "synthetic_data": {
+    "purpose": "development/testing only",
+    "path": "data/raw/synthetic",
+    "files": [
+      "traffic.csv",
+      "toll.csv",
+      "signal.csv",
+      "festival_calendar.csv"
+    ],
+    "modifiable": false
+  }
+}

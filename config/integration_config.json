@@ -1,0 +1,41 @@
+{
+  "primary_real_traffic": "data/processed/real_traffic_corridor_tagged.csv",
+  "supplementary_real_curated": {
+    "festival_calendar": "data/raw/real/karnataka_holidays_2022_2024.csv"
+  },
+  "supplementary_synthetic": {
+    "toll": "data/raw/synthetic/toll.csv",
+    "signal": "data/raw/synthetic/signal.csv",
+    "festival_calendar": "data/raw/synthetic/festival_calendar.csv"
+  },
+  "festival_join": {
+    "type": "left",
+    "traffic_key": "date",
+    "festival_key": "date",
+    "require_unique_festival_date": true,
+    "output_columns": [
+      "date",
+      "area",
+      "road_intersection",
+      "corridor",
+      "traffic_volume",
+      "average_speed",
+      "travel_time_index",
+      "congestion_level",
+      "congestion_class",
+      "weather",
+      "roadwork",
+      "day_of_week",
+      "day_type",
+      "festival_flag",
+      "festival_name",
+      "holiday_flag"
+    ]
+  },
+  "provenance": {
+    "primary_source": "real public Bengaluru traffic dataset",
+    "curated_supplementary_source": "manually curated Karnataka holiday and festival calendar based on published Karnataka Government holiday information; not an official government dataset",
+    "synthetic_sources": "development/testing only",
+    "raw_data_immutable": true
+  }
+}
