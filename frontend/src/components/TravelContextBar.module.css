@@ -1,0 +1,122 @@
+.bar {
+  display: grid;
+  grid-template-columns: minmax(180px, 230px) minmax(0, 1fr);
+  align-items: end;
+  gap: 24px;
+  padding: 18px;
+  border: 1px solid #d6dfd9;
+  border-radius: 10px;
+  background: #fbfcf9;
+  color: #1f302f;
+  box-shadow: 0 8px 24px rgba(31, 48, 47, 0.045);
+}
+
+.dateField,
+.contextField {
+  min-width: 0;
+  margin: 0;
+}
+
+.contextField {
+  padding: 0;
+  border: 0;
+}
+
+.fieldLabel {
+  display: block;
+  margin: 0 0 8px;
+  color: #526360;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dateInput {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 11px;
+  border: 1px solid #cbd6cf;
+  border-radius: 7px;
+  background: #fff;
+  color: #1f302f;
+  font: inherit;
+}
+
+.dateInput:focus-visible,
+.radio:focus-visible + .pill {
+  outline: 3px solid rgba(23, 107, 140, 0.42);
+  outline-offset: 3px;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.option {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pill {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 13px;
+  border: 1px solid #cbd6cf;
+  border-radius: 999px;
+  background: #fff;
+  color: #425550;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.3;
+  text-align: center;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.option:hover .pill {
+  border-color: #176b8c;
+  color: #12546c;
+}
+
+.radio:checked + .pill {
+  border-color: #12546c;
+  background: #12546c;
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .bar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding: 15px;
+  }
+
+  .options {
+    gap: 7px;
+  }
+
+  .pill {
+    min-height: 40px;
+    padding-inline: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+}

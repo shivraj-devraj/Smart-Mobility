@@ -1,0 +1,10 @@
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PROJECT_DOCUMENTATION.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/index.css', LF will be replaced by CRLF the next time Git touches it
+ README.md                                          | 189 [32m++++++++[m[31m--------[m
+ docs/PROJECT_DOCUMENTATION.md                      | 242 [32m++++++++++[m[31m-----------[m
+ .../components/HistoricalTrafficIntelligence.jsx   |  33 [32m+[m[31m--[m
+ frontend/src/components/RouteMap.jsx               |  26 [32m++[m[31m-[m
+ frontend/src/components/RouteSummary.jsx           |  19 [32m+[m[31m-[m
+ frontend/src/index.css                             |  29 [32m+++[m
+ 6 files changed, 302 insertions(+), 236 deletions(-)

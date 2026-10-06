@@ -1,5 +1,9 @@
+import { formatMetric } from '../utils/formatMetric.js'
+
 function RouteSummary({ routeData, selectedRoute, selectedRouteId, onSelectRoute }) {
   const routes = routeData?.routes || []
+  const recommendedRoute = routes.find((route) => route.id === routeData?.recommended_route_id)
+    || routes.find((route) => route.status === 'Recommended')
 
   return (
     <aside className="route-panel">
@@ -13,6 +17,17 @@ function RouteSummary({ routeData, selectedRoute, selectedRouteId, onSelectRoute
       <p className="route-basis-note">
         Route distance and duration are OSRM road-network estimates, not live traffic conditions.
       </p>
+
+      {recommendedRoute && (
+        <section className="best-route-recommendation" aria-label="Best route recommendation">
+          <span className="recommendation-kicker">Best Route Recommendation</span>
+          <strong>{recommendedRoute.summary || 'Recommended OSRM route'}</strong>
+          <span>
+            Recommended by the existing OSRM duration-bucket and distance ranking. This does not
+            include live traffic, historical corridor matching, or roadwork status.
+          </span>
+        </section>
+      )}
 
       {routes.length === 0 ? (
         <div className="results-empty">
@@ -40,7 +55,7 @@ function RouteSummary({ routeData, selectedRoute, selectedRouteId, onSelectRoute
                 </span>
                 <strong className="route-name">{route.summary || `Route ${index + 1}`}</strong>
                 <span className="route-metrics">
-                  <span><b>{Number(route.distance_km).toFixed(1)}</b> km</span>
+                  <span><b>{formatMetric(route.distance_km, 'distance')}</b></span>
                   <span><b>{route.duration_formatted || `${Math.round(route.duration_minutes ?? route.duration_min)} min`}</b></span>
                 </span>
                 <span className="route-select-hint">{isSelected ? 'Selected route' : 'View this route'}</span>
@@ -53,7 +68,7 @@ function RouteSummary({ routeData, selectedRoute, selectedRouteId, onSelectRoute
       {selectedRoute && (
         <div className="selected-details" aria-live="polite">
           <p className="eyebrow">SELECTED ROUTE DETAILS</p>
-          <div className="detail-line"><span>Distance</span><strong>{Number(selectedRoute.distance_km).toFixed(1)} km</strong></div>
+          <div className="detail-line"><span>Distance</span><strong>{formatMetric(selectedRoute.distance_km, 'distance')}</strong></div>
           <div className="detail-line"><span>OSRM road-network estimate</span><strong>{selectedRoute.duration_formatted || `${Math.round(selectedRoute.duration_minutes ?? selectedRoute.duration_min)} min`}</strong></div>
           <p className="recommendation-note">{selectedRoute.recommendation_reason || routeData.recommendation_rationale}</p>
           <span className="estimate-label">OSRM road-network estimate</span>

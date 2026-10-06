@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { API_BASE_URL } from '../config.js'
+import { formatMetric } from '../utils/formatMetric.js'
 
 async function fetchJson(url, signal) {
   const response = await fetch(url, { signal })
@@ -10,10 +11,10 @@ async function fetchJson(url, signal) {
 function MetricList({ entries }) {
   return (
     <dl className="historical-metrics">
-      {entries.map(([label, value, help]) => (
+      {entries.map(([label, value, help, type = 'decimal']) => (
         <div className="historical-metric" key={label}>
           <dt title={help}>{label}</dt>
-          <dd>{String(value)}</dd>
+          <dd>{formatMetric(value, type)}</dd>
         </div>
       ))}
     </dl>
@@ -27,12 +28,12 @@ function DayTypeCard({ row }) {
       <MetricList
         entries={[
           ['Average congestion level', row.average_congestion_level, 'Average congestion level in historical observations.'],
-          ['Average speed', row.average_speed, 'Average recorded speed in the historical dataset.'],
-          ['Average traffic volume', row.average_traffic_volume, 'Average observed traffic volume in historical records.'],
+          ['Average speed', row.average_speed, 'Average recorded speed in the historical dataset.', 'speed'],
+          ['Average traffic volume', row.average_traffic_volume, 'Average observed traffic volume in historical records.', 'volume'],
           ['Average travel time index', row.average_travel_time_index, 'Historical travel-time indicator available in the dataset.'],
-          ['Records', row.record_count],
-          ['High-congestion records', row.high_congestion_count],
-          ['High-congestion percentage', `${row.high_congestion_percentage}%`],
+          ['Records', row.record_count, undefined, 'count'],
+          ['High-congestion records', row.high_congestion_count, undefined, 'count'],
+          ['High-congestion percentage', row.high_congestion_percentage, undefined, 'percentage'],
         ]}
       />
     </article>
@@ -46,10 +47,10 @@ function DayOfWeekCard({ row }) {
       <MetricList
         entries={[
           ['Average congestion level', row.average_congestion_level, 'Average congestion level in historical observations.'],
-          ['Average speed', row.average_speed, 'Average recorded speed in the historical dataset.'],
-          ['Average traffic volume', row.average_traffic_volume, 'Average observed traffic volume in historical records.'],
-          ['Records', row.record_count],
-          ['High-congestion percentage', `${row.high_congestion_percentage}%`],
+          ['Average speed', row.average_speed, 'Average recorded speed in the historical dataset.', 'speed'],
+          ['Average traffic volume', row.average_traffic_volume, 'Average observed traffic volume in historical records.', 'volume'],
+          ['Records', row.record_count, undefined, 'count'],
+          ['High-congestion percentage', row.high_congestion_percentage, undefined, 'percentage'],
         ]}
       />
     </article>
@@ -193,7 +194,7 @@ function HistoricalTrafficIntelligence() {
                     <strong>{corridor.corridor}</strong>
                     <div className="high-congestion-rate">
                       <span>High congestion</span>
-                      <strong>{corridor.high_congestion_percentage}%</strong>
+                      <strong>{formatMetric(corridor.high_congestion_percentage, 'percentage')}</strong>
                     </div>
                     <p className="high-congestion-explainer">
                       Historical observations classified as high congestion.
@@ -259,22 +260,22 @@ function HistoricalTrafficIntelligence() {
                       </div>
                       <div className="historical-kpi">
                         <dt title="Average recorded speed in the historical dataset.">Average speed</dt>
-                        <dd>{String(selectedSummary.average_speed)}</dd>
+                        <dd>{formatMetric(selectedSummary.average_speed, 'speed')}</dd>
                         <small>Observed in historical records</small>
                       </div>
                       <div className="historical-kpi">
                         <dt title="Average observed traffic volume in historical records.">Average traffic volume</dt>
-                        <dd>{String(selectedSummary.average_traffic_volume)}</dd>
+                        <dd>{formatMetric(selectedSummary.average_traffic_volume, 'volume')}</dd>
                         <small>Historical observed average</small>
                       </div>
                       <div className="historical-kpi">
                         <dt title="Average congestion level in the historical dataset.">Average congestion</dt>
-                        <dd>{String(selectedSummary.average_congestion_level)}</dd>
+                        <dd>{formatMetric(selectedSummary.average_congestion_level)}</dd>
                         <small>Historical observed average</small>
                       </div>
                       <div className="historical-kpi">
                         <dt title="Historical travel-time indicator available in the dataset.">Travel time index</dt>
-                        <dd>{String(selectedSummary.average_travel_time_index)}</dd>
+                        <dd>{formatMetric(selectedSummary.average_travel_time_index)}</dd>
                         <small>Dataset indicator</small>
                       </div>
                     </dl>

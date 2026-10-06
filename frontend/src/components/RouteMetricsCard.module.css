@@ -1,0 +1,140 @@
+.card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #d6dfd9;
+  border-radius: 10px;
+  background: #fbfcf9;
+  color: #1f302f;
+  box-shadow: 0 8px 24px rgba(31, 48, 47, 0.045);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #75837f;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.title {
+  margin: 0;
+  color: #203b34;
+  font: 500 20px/1.2 Georgia, "Palatino Linotype", serif;
+}
+
+.severity,
+.delay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.severity {
+  min-height: 28px;
+  padding: 5px 10px;
+}
+
+.low {
+  border-color: #b6d9c0;
+  background: #e8f4eb;
+  color: #28613a;
+}
+
+.medium {
+  border-color: #edd39b;
+  background: #fff4d9;
+  color: #7b5100;
+}
+
+.high {
+  border-color: #e7b4ad;
+  background: #fbe9e6;
+  color: #9b3024;
+}
+
+.disclaimer {
+  margin: 15px 0;
+  color: #667575;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 13px;
+  border: 1px solid #e0e7e2;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.metricLabel {
+  color: #526360;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.metricValue {
+  color: #1f302f;
+  font-size: 23px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.metricHint {
+  color: #7a8984;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 13px;
+}
+
+.distance {
+  color: #526360;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.delay {
+  min-height: 27px;
+  padding: 5px 9px;
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 15px;
+  }
+
+  .metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

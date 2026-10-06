@@ -1,19 +1,19 @@
 # Smart Mobility: Bengaluru Traffic Congestion Analytics & Advisory System
 
-A Big Data Analytics platform built with Apache PySpark, Spark SQL, and Streamlit for batch historical traffic congestion analysis, chronological machine learning classification, historical scenario exploration, and rule-based traffic advisory generation across Bengaluru's major arterial corridors.
+A full-stack Bengaluru traffic intelligence project combining a React (Vite) and FastAPI application with an offline PySpark analytics and machine-learning pipeline. The application provides OSRM-based route comparison and CSV-backed historical corridor traffic and advisory views.
 
 ---
 
 ## 1. Project Overview
 
-This project provides a reproducible Big Data Analytics platform designed to analyze historical traffic patterns across major Bengaluru road corridors. The system processes multi-year traffic records alongside a curated Karnataka regional calendar to deliver:
+This project combines a browser application with a reproducible historical analytics pipeline. The pipeline processes multi-year Bengaluru traffic records alongside a curated Karnataka regional calendar to deliver:
 
 - **Corridor-Level Traffic Analytics**: Aggregated historical metrics across 16 major corridors.
 - **Congestion Classification**: Multi-class classification (Low, Medium, High) evaluated on a held-out chronological test split.
-- **Historical Scenario Analysis**: An interactive what-if explorer for comparing observed conditions under specific contextual filters.
+- **Historical Scenario Analysis**: Offline comparisons of observed conditions under contextual filters.
 - **Model Benchmarking & Evaluation**: Baseline Decision Tree compared against a Random Forest benchmark with per-class metrics and grouped feature importance.
-- **Rule-Based Traffic Advisory**: Transparent, deterministic traffic management recommendations driven by predicted congestion and contextual triggers.
-- **Interactive Dashboard**: A modular Streamlit interface for exploring validated batch outputs.
+- **Historical Advisory**: Transparent, deterministic recommendations generated from persisted traffic records and, in a separate batch output, predicted test-period classes.
+- **Web Application**: A React/Vite frontend with a FastAPI backend for route comparison and CSV-backed historical traffic and advisory endpoints.
 
 ### Operational Scope & Clarification
 This system is an **offline batch historical analytics and diagnostic classification platform**. It is explicitly **NOT**:
@@ -31,7 +31,7 @@ This system is an **offline batch historical analytics and diagnostic classifica
 3. **Conduct Distributed Descriptive Analytics**: Utilize Spark SQL to quantify traffic variations across weekdays, weekends, festivals, holidays, and adverse weather.
 4. **Build Baseline & Benchmark Classifiers**: Train a Spark MLlib Decision Tree baseline and evaluate a Random Forest benchmark on a strict chronological split without temporal leakage.
 5. **Generate Deterministic Advisories**: Map predicted congestion tiers and contextual flags to traceable operational recommendations.
-6. **Deliver Interactive Visualization**: Provide an exploratory Streamlit dashboard for stakeholders to inspect historical trends, test scenarios, and review model behavior.
+6. **Deliver Interactive Visualization**: Provide browser-based route search and historical corridor intelligence through React and FastAPI.
 
 ---
 
@@ -53,29 +53,32 @@ The primary data source is a validated public dataset of Bengaluru traffic obser
 
 ## 4. Architecture
 
-The end-to-end data pipeline follows a modular, batch-oriented architecture:
+The project has two connected application/data paths: an offline historical analytics pipeline and a browser application. The FastAPI endpoints read persisted analytics outputs; Spark is not run for each browser request.
 
+```mermaid
+flowchart LR
+    subgraph Browser
+        UI[React + Vite<br/>Route Search, Historical Intelligence]
+        MAP[React-Leaflet map]
+    end
+    subgraph API
+        API[FastAPI on Uvicorn]
+        ROUTE[Route service]
+        HIST[Historical traffic and advisory APIs]
+    end
+    OSM[Nominatim geocoding] --> ROUTE
+    ROUTE --> OSRM[OSRM road-network routing]
+    OSRM --> ROUTE
+    UI <--> API
+    MAP --> UI
+    HIST --> CSV[Persisted CSV outputs]
+    PIPE[PySpark preprocessing, Spark SQL, MLlib] --> CSV
+    CAL[Historical traffic + calendar inputs] --> PIPE
 ```
-Raw Traffic Data (data/raw/real/)
-       ↓
-Preprocessing (src/preprocessing/)
-       ↓
-Corridor Tagging (src/corridor/)
-       ↓
-Calendar Integration (src/ingestion/)
-       ↓
-Integrated Traffic Dataset (data/processed/integrated_traffic_data.csv)
-       ↓
-Spark SQL Analytics (src/analytics/)
-       ↓
-Decision Tree Baseline (src/prediction/train_decision_tree.py)
-       ↓
-Random Forest Benchmark (src/prediction/benchmark_random_forest.py)
-       ↓
-Prediction + Rule-Based Advisory Pipeline (src/advisory/)
-       ↓
-Static Visualizations (src/visualization/) & Streamlit Dashboard (dashboard/app.py)
-```
+
+Route flow: React sends location text or selected real coordinates to FastAPI; the route service uses Nominatim when geocoding is needed and requests route alternatives from OSRM. The frontend renders the returned geometry with React-Leaflet.
+
+Historical flow: PySpark generates persisted outputs offline. FastAPI reads the persisted corridor summaries and historical advisory output for the React interface. Historical advisory data is not matched to OSRM route geometry.
 
 ### Source Directory Organization
 - `src/ingestion/`: Raw data validation, synthetic context generation, and calendar integration.
@@ -84,9 +87,15 @@ Static Visualizations (src/visualization/) & Streamlit Dashboard (dashboard/app.
 - `src/analytics/`: Distributed Spark SQL aggregations for corridor, temporal, and festival summaries.
 - `src/prediction/`: ML pipeline feature assembly, baseline Decision Tree training, and Random Forest benchmarking.
 - `src/advisory/`: Deterministic rule engine and prediction-to-advisory scoring pipeline.
-- `src/route/`: Open-source routing integration (Nominatim geocoding, OSRM driving routes, and Folium/Leaflet OpenStreetMap rendering).
+- `src/route/`: Shared Nominatim geocoding and OSRM route parsing/ranking services used by the API.
+- `backend/app/`: FastAPI application, route/traffic/advisory endpoints, schemas, and services.
+- `frontend/src/`: React application, route search/map/results, and historical traffic/advisory UI.
+- `frontend/src/components/RouteSearch.jsx`: Location autocomplete and route-search form.
+- `frontend/src/components/RouteMap.jsx`: React-Leaflet route map.
+- `frontend/src/components/RouteSummary.jsx`: Route alternatives and OSRM ranking explanation.
+- `frontend/src/components/HistoricalTrafficIntelligence.jsx`: Historical corridor metrics and advisory view.
+- `frontend/src/components/RouteMetricsCard.jsx`, `RouteAdvisoryCard.jsx`, and `TravelContextBar.jsx`: Reusable components currently present in the source tree; they are not connected to route-specific congestion scoring.
 - `src/visualization/`: Production of static publication-quality matplotlib/seaborn charts.
-- `dashboard/`: Streamlit web application providing interactive batch analysis and route recommendation.
 
 ---
 
@@ -96,8 +105,9 @@ Static Visualizations (src/visualization/) & Streamlit Dashboard (dashboard/app.
 - **Distributed Processing**: Apache PySpark 3.5.x (PySpark SQL, MLlib)
 - **Data Manipulation**: Pandas 2.x
 - **Visualization**: Matplotlib 3.8+, Seaborn 0.13+
-- **Interactive UI**: Streamlit 1.32+
-- **Geographic Routing & Mapping**: OpenStreetMap, OSRM (Open Source Routing Machine), Folium / Leaflet (100% Free & Open-Source, zero paid APIs)
+- **Frontend**: React, Vite, JavaScript, CSS and CSS Modules (no Tailwind dependency is configured).
+- **Backend API**: FastAPI and Uvicorn.
+- **Geographic Routing & Mapping**: OpenStreetMap Nominatim, OSRM (Open Source Routing Machine), Leaflet and React-Leaflet.
 - **Model Specification**: JSON (portable schema-validated specification artifacts)
 - **Version Control**: Git / GitHub
 
@@ -105,10 +115,10 @@ Static Visualizations (src/visualization/) & Streamlit Dashboard (dashboard/app.
 
 ## 6. Data Processing and Analytics
 
-1. **Preprocessing & Schema Standardization**: Normalizes dates into `yyyy-MM-dd`, validates numeric fields (`traffic_volume`, `average_speed`, `travel_time_index`), and derives `congestion_class` using established domain thresholds:
-   - `Low`: Congestion Level $\le 0.30$
-   - `Medium`: $0.30 <$ Congestion Level $\le 0.70$
-   - `High`: Congestion Level $> 0.70$
+1. **Preprocessing & Schema Standardization**: Normalizes dates into `yyyy-MM-dd`, validates numeric fields (`traffic_volume`, `average_speed`, `travel_time_index`), and derives `congestion_class` using configured thresholds:
+   - `Low`: Congestion Level `< 60`
+   - `Medium`: `60 <= Congestion Level < 90`
+   - `High`: Congestion Level `>= 90`
 2. **Corridor Identification**: Combines `area` and `road_intersection` into 16 composite corridor keys (e.g., `Indiranagar | 100 Feet Road`, `Electronic City | Hosur Road`).
 3. **Data Integration**: Performs a row-preserving left join with the Karnataka holiday and festival calendar, attaching `festival_flag`, `festival_name`, and `holiday_flag`.
 4. **Spark SQL Aggregations**: Generates summary outputs covering top corridors by average congestion, high-congestion percentages, weekday versus weekend distributions, and festival comparisons.
@@ -117,7 +127,7 @@ Static Visualizations (src/visualization/) & Streamlit Dashboard (dashboard/app.
 
 ## 7. Historical Scenario Analysis
 
-The Streamlit dashboard features an interactive **Historical Scenario Analysis Explorer** that allows users to isolate and observe historical patterns under specific operational combinations:
+The offline analytics project includes a historical scenario analysis workflow for comparing persisted observations under contextual combinations:
 
 - **Scenario Controls**: Corridor, Day Type (Weekday/Weekend), Festival (Festival/Non-Festival), Holiday (Holiday/Non-Holiday), Weather (Clear, Fog, Overcast, Rain, Windy), and Roadwork (Yes/No).
 - **Comparative Metrics**: Displays historical subset size, average congestion, high-congestion percentage, average speed, traffic volume, and travel time index alongside deltas relative to the full dataset baseline.
@@ -158,7 +168,7 @@ Neither model is characterized as "best", "winner", or "superior". The Random Fo
 
 ## 9. Per-Class Evaluation
 
-To avoid reliance on aggregate metrics alone, the dashboard provides a granular per-class breakdown mathematically derived from the validated test-set confusion matrices:
+To avoid reliance on aggregate metrics alone, persisted evaluation outputs include a granular per-class breakdown derived from the validated test-set confusion matrices:
 
 | Class | Model | Precision | Recall | F1 Score | Test Support |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -228,33 +238,28 @@ Recommendations are operational suggestions derived from deterministic rules; th
 
 ---
 
-## 13. Dashboard
+## 13. React Application
 
-The Streamlit web application ([dashboard/app.py](dashboard/app.py)) provides an interactive presentation of all validated outputs:
+The browser application is implemented in `frontend/` with a Vite development server and React UI. FastAPI serves route, historical traffic, and historical advisory endpoints.
 
-1. **Overview KPIs**: Global traffic counts, average congestion, high-congestion percentages, and corridor counts.
-2. **Historical Congestion**: Class distributions, weekday vs weekend comparisons, and festival impact charts.
-3. **Corridor Analysis**: Top 5 corridors by average congestion and high-congestion frequency.
-4. **Historical Scenario Analysis**: Interactive explorer across 6 contextual dimensions with comparative KPIs.
-5. **ML Prediction / Classification**: Overall metrics, confusion matrix, and benchmark comparison table.
-6. **Per-Class Model Performance**: Precision, Recall, F1, and Support comparison for DT and RF.
-7. **Model Feature Importance**: Sorted horizontal bar chart of the 12 logical feature groups.
-8. **Rule-Based Traffic Advisory**: Advisory level distributions and filterable recommendation records.
-9. **Smart Route Recommendation**: Open-source route decision support powered by OpenStreetMap, OSRM, and Folium (distance, duration, route comparison, and transparent recommendation).
-10. **Context Analysis**: Event counts for festivals, holidays, roadwork, and weather.
-11. **Key Observations & Limitations**: Summary observations and explicit dataset boundary disclaimers.
+- **Route Search** (`RouteSearch.jsx`): Origin/destination fields with Nominatim-backed autocomplete.
+- **Route Results** (`RouteSummary.jsx`): OSRM alternatives, distance, road-network duration estimates, and the existing route recommendation.
+- **Leaflet Map** (`RouteMap.jsx`): Displays route geometry, origin/destination markers, and selectable route alternatives using React-Leaflet.
+- **Historical Corridor Analytics and Advisory** (`HistoricalTrafficIntelligence.jsx`): Reads persisted CSV-backed API results for corridor summaries, temporal information, and historical advisory data.
+- **Reusable UI components**: `TravelContextBar.jsx`, `RouteMetricsCard.jsx`, and `RouteAdvisoryCard.jsx` exist in the source tree but are not currently wired into route-specific congestion scoring. Route metric adjustments are illustrative only, not model predictions.
+
+The API reads persisted historical outputs; it does not launch PySpark for each browser request. Historical corridor/advisory data is not matched to OSRM geometry.
 
 ---
 
-## 14. Smart Route Recommendation (OpenStreetMap + OSRM)
+## 14. Route Recommendation (Nominatim + OSRM)
 
-As an extension to corridor-level decision support, the dashboard includes a free, open-source **Smart Route Recommendation** module:
-
-- **Open-Source Components**: Utilizes **OpenStreetMap Nominatim** for geocoding, the **Open Source Routing Machine (OSRM)** driving service for road-network path calculation and GeoJSON geometry, and **Folium / Leaflet** for interactive browser map display.
-- **Zero Cost & No API Keys**: Operates 100% free without external cloud accounts, API keys, or billing subscriptions.
-- **Transparent Recommendation Logic**: Ranks candidate routes primarily by estimated duration, breaking close ties (within 1 minute) using shorter travel distance. Generates clear, human-auditable rationales.
-- **No Live Traffic Claim**: OSRM calculates routes from road-network topology and default speed profiles; it does **not** provide live traffic feeds or congestion layers.
-- **Architectural Separation**: The route recommendation module provides external travel decision support. It is completely independent of the historical Spark SQL / MLlib congestion classification pipeline.
+- **Nominatim** resolves typed locations and supplies real coordinates.
+- **OSRM** returns road-network route alternatives, geometry, distance, and estimated duration.
+- **React-Leaflet** renders returned routes in the browser map.
+- The current recommendation sorts durations into 60-second buckets, then uses route distance to order routes within a bucket.
+- The ranking does **not** use live traffic, historical congestion, or roadwork status. It is separate from the Spark SQL / MLlib pipeline.
+- Public geocoding/routing services have their own availability and usage policies; no paid key is configured in this project.
 
 ---
 
@@ -283,8 +288,12 @@ To guarantee 100% reproducibility across operating systems without external bina
 ```text
 BDA project/
 ├── config/                  # Pipeline schemas, thresholds, and mappings
-├── dashboard/               # Streamlit interactive application
-│   └── app.py               # Main dashboard script
+├── backend/                 # FastAPI routes, schemas, and services
+├── frontend/                # React/Vite browser application
+│   └── src/
+│       ├── components/      # Route search, map, results, historical views
+│       └── utils/           # UI formatting and corridor helper utilities
+├── dashboard/               # Older Python dashboard source retained in the repository
 ├── data/
 │   ├── output/              # Validated CSV summaries, reports, and charts
 │   ├── processed/           # Preprocessed and integrated traffic datasets
@@ -310,36 +319,44 @@ BDA project/
 
 ## 17. Installation
 
-1. Clone the repository and navigate to the project directory:
-   ```bash
-   cd "BDA project"
-   ```
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   # Windows:
-   .venv\Scripts\activate
-   # Linux/macOS:
-   source .venv/bin/activate
-   ```
-3. Install the verified dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+The following commands reflect the current Windows project layout, where the Python virtual environment is in the outer `BDA project` folder and the application source is in its inner `BDA project` folder.
 
-*Prerequisites*: Java 8, 11, or 17 must be installed and available on the system PATH for Apache Spark.
+### Backend setup and startup
 
----
+In PowerShell Terminal 1:
 
-## 18. Running the Dashboard
-
-To launch the interactive dashboard against existing validated artifacts:
-
-```bash
-streamlit run dashboard/app.py
+```powershell
+cd "C:\Users\shivr\Downloads\BDA project"
+.\.venv\Scripts\Activate.ps1
+python -m uvicorn backend.app.main:app --app-dir "C:\Users\shivr\Downloads\BDA project\BDA project" --reload --port 8000
 ```
 
-The application will start locally at `http://localhost:8501`. Note that the dashboard visualizes existing validated outputs and does not recompute the Spark pipeline during startup.
+If the environment has not been created, create it and install the Python dependencies from the inner project root first:
+
+```powershell
+cd "C:\Users\shivr\Downloads\BDA project"
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r ".\BDA project\requirements.txt"
+```
+
+### Frontend setup and startup
+
+In PowerShell Terminal 2:
+
+```powershell
+cd "C:\Users\shivr\Downloads\BDA project\BDA project\frontend"
+npm install
+npm run dev
+```
+
+### Local URLs
+
+- Frontend: [http://localhost:5173](http://localhost:5173)
+- FastAPI Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Backend health: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+
+The frontend and backend run in separate terminals. The offline PySpark pipeline is run separately and writes persisted outputs used by the historical APIs.
 
 ---
 
@@ -383,7 +400,7 @@ python -m src.visualization.create_visualizations
 
 ## 20. Validation
 
-All pipeline stages and dashboard components have undergone comprehensive verification:
+The analytics pipeline, backend APIs, and browser application have undergone project validation:
 
 - **Compilation**: Clean compilation of all Python modules without syntax or import errors.
 - **Runtime Health**: Dashboard health endpoint (`_stcore/health`) and UI load confirmed with HTTP 200.

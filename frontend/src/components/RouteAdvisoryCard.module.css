@@ -1,0 +1,161 @@
+.card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #d6dfd9;
+  border-radius: 10px;
+  background: #fbfcf9;
+  color: #1f302f;
+  box-shadow: 0 8px 24px rgba(31, 48, 47, 0.045);
+}
+
+.contextAlert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 10px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border: 1px solid #edd39b;
+  border-radius: 7px;
+  background: #fff8e7;
+  color: #6b4c0a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.alertLabel {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.heading {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #75837f;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.title {
+  margin: 0;
+  color: #203b34;
+  font: 500 20px/1.2 Georgia, "Palatino Linotype", serif;
+}
+
+.corridor {
+  margin: 7px 0 0;
+  color: #667575;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.severity {
+  display: inline-flex;
+  min-height: 28px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.low {
+  border-color: #b6d9c0;
+  background: #e8f4eb;
+  color: #28613a;
+}
+
+.medium {
+  border-color: #edd39b;
+  background: #fff4d9;
+  color: #7b5100;
+}
+
+.high {
+  border-color: #e7b4ad;
+  background: #fbe9e6;
+  color: #9b3024;
+}
+
+.actions {
+  display: grid;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.actionRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e0e7e2;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.actionIcon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 7px;
+  background: #f0f4f1;
+  font-size: 15px;
+}
+
+.actionContent {
+  min-width: 0;
+}
+
+.actionContent h3 {
+  margin: 0;
+  color: #526360;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.actionContent p {
+  margin: 4px 0 0;
+  color: #263c36;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.disclaimer {
+  margin: 15px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #e0e7e2;
+  color: #667575;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 15px;
+  }
+
+  .actionRow {
+    padding: 10px;
+  }
+}

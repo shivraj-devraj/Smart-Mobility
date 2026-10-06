@@ -10,7 +10,7 @@ Detailed project title:
 
 ## 2. Abstract
 
-This project implements a batch historical analytics platform for Bengaluru traffic congestion. It loads a validated public traffic dataset, preserves the raw inputs, performs Spark-based preprocessing and corridor tagging, integrates a curated Karnataka holiday and festival calendar, and produces Spark SQL summaries. It also performs leakage-aware historical congestion classification with a Spark MLlib Decision Tree baseline and evaluates a Random Forest benchmark on an identical chronological held-out test split. It translates test-period predictions into deterministic rule-based traffic advisories, provides an interactive Historical Scenario Analysis explorer, creates static visualizations, and presents the validated outputs through a Streamlit dashboard.
+This project combines an offline historical analytics pipeline with a React/Vite browser application and FastAPI backend. The data pipeline loads a validated public traffic dataset, performs Spark preprocessing and corridor tagging, integrates a curated Karnataka holiday and festival calendar, and produces persisted Spark SQL summaries. It also performs historical congestion classification with a Spark MLlib Decision Tree baseline and evaluates a Random Forest benchmark on an identical chronological held-out test split. FastAPI serves route, persisted historical traffic, and persisted advisory endpoints to the React application. OSRM supplies road-network route geometry and estimates; the frontend renders maps with React-Leaflet.
 
 The primary integrated dataset contains 8,936 records covering 2022-01-01 through 2024-08-09 across 16 corridors. The Decision Tree baseline and Random Forest benchmark use a chronological held-out test period from 2024-02-01 through 2024-08-09 containing 1,791 records. The validated test metrics are:
 - **Decision Tree Baseline**: Accuracy 0.919040, Weighted Precision 0.919577, Weighted Recall 0.919040, F1 Score 0.919270.
@@ -18,7 +18,7 @@ The primary integrated dataset contains 8,936 records covering 2022-01-01 throug
 
 These values describe historical classification performance on the chronological held-out test set; they are not a claim of long-horizon future prediction or forecasting accuracy.
 
-The system is batch-based. It does not provide live traffic monitoring, live GPS tracking, live FASTag processing, traffic-signal event processing, physical traffic-control automation, or external API integration.
+Historical traffic processing is batch-based. Route search uses external Nominatim and OSRM services, but the application does not provide live traffic monitoring, live GPS tracking, live FASTag processing, traffic-signal event processing, physical traffic-control automation, or route-to-historical-corridor matching.
 
 ## 3. Introduction
 
@@ -33,12 +33,12 @@ The project addresses the need to organize Bengaluru traffic records into a repr
 - prepare and validate historical traffic data;
 - group observations by a transparent corridor identifier;
 - compare congestion across corridors, day types, festivals, holidays, and days of the week;
-- explore historical scenarios interactively across multiple contextual dimensions;
+- generate historical scenario comparisons across multiple contextual dimensions;
 - classify observed congestion into Low, Medium, and High categories using machine learning;
 - benchmark ensemble classification stability using Random Forest against the Decision Tree baseline;
 - quantify per-class Precision, Recall, F1, and Support, and analyze grouped feature importance;
 - translate predicted classes into transparent, rule-based traffic-management recommendations; and
-- communicate validated historical findings through static charts and an interactive batch dashboard.
+- communicate validated historical findings through static charts and CSV-backed API responses.
 
 The implemented system does not claim to control traffic infrastructure or make live operational decisions.
 
@@ -58,7 +58,7 @@ The implemented objectives are:
 10. Implement an interactive Historical Scenario Analysis engine for contextual comparisons.
 11. Generate prediction-based, rule-based advisories for the held-out test period.
 12. Produce reproducible static visualizations.
-13. Provide an interactive Streamlit dashboard for batch historical analysis.
+13. Provide a React/Vite browser application backed by FastAPI for route comparison and historical traffic/advisory views.
 14. Maintain Windows/Spark compatibility through portable JSON model specifications.
 15. Validate all completed phases through automated and structural verification checks.
 
@@ -73,15 +73,15 @@ The implemented objectives are:
 - Spark MLlib Decision Tree baseline classification.
 - Spark MLlib Random Forest benchmark classification.
 - Per-class metric calculation (Precision, Recall, F1, Support) and grouped feature importance analysis.
-- Historical scenario analysis / what-if explorer in Streamlit.
+- Persisted historical traffic and advisory views in the React application.
 - Prediction-to-advisory processing for the chronological test period.
 - Static matplotlib/seaborn visualizations.
-- Streamlit batch dashboard with dynamic metric parsing and robust date filtering.
-- Comprehensive structural, data, artifact, and dashboard validation.
+- FastAPI endpoints for route search and persisted corridor traffic/advisory outputs.
+- Comprehensive structural, data, artifact, backend API, and frontend validation.
 
 ### Excluded
 
-The repository does not implement live traffic feeds, streaming, external APIs, GPS coordinates, geospatial mapping, traffic direction, hourly observations, integrated FASTag/toll transactions, integrated traffic-signal event streams, physical deployment of personnel, automatic diversion activation, or automatic roadwork control.
+The repository does not implement live traffic feeds, streaming traffic ingestion, validated GPS coordinates for historical corridors, historical-to-route geospatial matching, traffic direction, hourly observations, integrated FASTag/toll transactions, integrated traffic-signal event streams, physical deployment of personnel, automatic diversion activation, or automatic roadwork control. Route lookup does call the public Nominatim and OSRM services.
 
 ## 7. Existing System / Motivation
 
@@ -106,7 +106,7 @@ The implemented proposed system is a batch pipeline:
 11. Fit and evaluate the Random Forest benchmark on the identical chronological test period.
 12. Compute per-class Precision, Recall, F1, and Support, and aggregate grouped feature importances.
 13. Generate predicted classes and pass them to the rule-based advisory engine.
-14. Create static charts and display validated outputs in the Streamlit dashboard alongside the Historical Scenario Analysis explorer.
+14. Create static charts and expose persisted corridor traffic/advisory outputs through FastAPI to the React application.
 
 ## 9. System Architecture
 
@@ -127,12 +127,18 @@ flowchart TD
     J1 --> M1[Overall metrics: Acc 0.919040]
     J2 --> M2[Benchmark metrics: Acc 0.903406]
     J1 & J2 --> P[Per-class evaluation & RF feature importance]
-    F --> Q[Historical scenario analysis explorer]
+    F --> Q[Persisted historical scenario analyses]
     G --> R[Static visualizations]
-    F & G & L & M1 & M2 & P & Q & R --> S[Streamlit batch dashboard: dashboard/app.py]
+    F & G & L & M1 & M2 & P & Q & R --> S[Persisted output files]
+    S --> API[FastAPI on Uvicorn]
+    UI[React + Vite] <--> API
+    API --> ROUTE[Route service]
+    ROUTE --> NOM[Nominatim]
+    ROUTE --> OSRM[OSRM road-network routing]
+    UI --> MAP[React-Leaflet map]
 ```
 
-The pipeline is historical and batch-based. It does not contain a live ingestion or control loop.
+The analytics and ML pipeline is historical and batch-based. Browser requests read persisted traffic and advisory outputs through FastAPI; they do not run the Spark pipeline. Route search follows a separate request path through Nominatim and OSRM. Historical advisory data is not matched to OSRM route geometry.
 
 ## 10. Technologies Used
 
@@ -140,9 +146,13 @@ The pipeline is historical and batch-based. It does not contain a live ingestion
 - **PySpark** (3.5.x) for CSV loading, typed DataFrames, transformations, Spark SQL, and MLlib classification.
 - **Spark SQL** for corridor, day-type, festival, holiday, day-of-week, and ranking summaries.
 - **Spark MLlib** for `StringIndexer`, `OneHotEncoder`, `VectorAssembler`, `Pipeline`, `DecisionTreeClassifier`, `RandomForestClassifier`, and `MulticlassClassificationEvaluator`.
-- **pandas** (2.x) for reading validated summary files, per-class derivations, and dashboard state management.
+- **pandas** (2.x) for offline report and output processing.
 - **matplotlib** and **seaborn** for static visualizations, confusion-matrix heatmaps, and horizontal feature-importance bar charts.
-- **Streamlit** (1.32+) for the interactive batch dashboard.
+- **React** and **Vite** for the browser application.
+- **Leaflet** and **React-Leaflet** for interactive route maps.
+- **CSS and CSS Modules** for frontend styling; Tailwind is not configured in the frontend package.
+- **FastAPI** and **Uvicorn** for the HTTP API and local ASGI server.
+- **OpenStreetMap Nominatim** and **OSRM** for geocoding and road-network route calculations.
 - **CSV, JSON, and Markdown** for project inputs, configuration, reports, portable model specifications, and documentation.
 
 ## 11. Dataset and Data Sources
@@ -448,50 +458,30 @@ Phase 8A creates static charts using pandas, matplotlib, and seaborn, written to
 
 The charts are reproducible static views of validated batch outputs.
 
-## 20. Streamlit Dashboard
+## 20. React + FastAPI Web Application
 
-The Streamlit web application (`dashboard/app.py`) provides an interactive interface titled **Smart Mobility: Bengaluru Traffic Congestion Analytics & Advisory**.
+The current browser application is implemented in `frontend/` with React and Vite. The FastAPI application in `backend/app/main.py`, served locally with Uvicorn, exposes route, persisted traffic, and advisory endpoints.
 
-### 20.1 Core Dashboard Architecture
-- Labeled explicitly as **Batch Historical Analysis** with non-real-time captions.
-- Implements defensive caching (`@st.cache_data`) for CSVs and text summaries.
-- Validates artifact existence at startup via `require_files()`; displays clear error messages if outputs are missing.
+### 20.1 Route Search and Map
+- `RouteSearch.jsx` provides From/To fields, Nominatim-backed autocomplete, and route submission.
+- The FastAPI route service reuses selected coordinates when supplied; otherwise, it resolves the entered location through Nominatim.
+- The route service requests road-network route alternatives from OSRM and returns geometry, distance, and duration estimates.
+- `RouteMap.jsx` renders route geometry using React-Leaflet; `RouteSummary.jsx` displays alternatives and the existing recommendation.
+- OSRM duration and ranking do not represent live traffic or corridor-specific congestion.
 
-### 20.2 Phase 1 Reliability: Dynamic Metric Parsing & Inclusive Date Filtering
-- Implements dynamic regex parsing for model evaluation summaries, removing hardcoded expected values and accommodating both "F1" and "F1 Score" labels.
-- Date filtering utilizes `errors="coerce"` and `inclusive="both"` to reliably preserve boundary dates.
+### 20.2 Historical Corridor Analytics and Advisory
+- `HistoricalTrafficIntelligence.jsx` requests corridor summaries, high-congestion corridor summaries, and temporal summaries from FastAPI.
+- The historical advisory API reads `data/output/advisory_output.csv`; the UI presents persisted actions and context counts for the selected historical corridor.
+- The backend APIs read validated persisted outputs. They do not start Spark for each request.
+- No validated geographic mapping joins historical corridors to OSRM route geometry, so the historical view is explicitly not route-specific.
 
-### 20.3 Phase 2 GIS Investigation: Intentional Map Omission
-- An inspection of raw and processed datasets confirmed that no validated latitude/longitude coordinates exist.
-- In accordance with academic integrity standards, no artificial GPS coordinates or map markers were fabricated. Spatial patterns are represented via text-based composite corridors.
+### 20.3 Reusable Frontend Components
+- `TravelContextBar.jsx`, `RouteMetricsCard.jsx`, and `RouteAdvisoryCard.jsx` are present as reusable components but are not currently mounted in the main application or connected to route-specific congestion data.
+- The adjusted time in `RouteMetricsCard` uses illustrative class multipliers; it is not an ML prediction and should not be presented as a forecast.
+- `extractCorridorsFromOSRM.ts` is a helper, not an authoritative spatial-matching service. Its keyword matching and fallback cannot establish that an OSRM route traverses a historical corridor.
 
-### 20.4 Phase 3 Historical Scenario Analysis / What-If Explorer
-- Provides an interactive scenario engine operating across 6 independent contextual controls: Corridor, Day Type, Festival, Holiday, Weather, and Roadwork.
-- Displays subset size, average congestion, high-congestion percentage, average speed, traffic volume, and travel time index alongside deltas compared to the 8,936-record baseline.
-- Includes descriptive charts and defensive handling for combinations with 0 matching records (`st.info`).
-- Stamped with the required disclaimer: *"Historical comparison only — differences do not establish causation."*
-
-### 20.5 Phase 4 ML Model Benchmark Integration
-- Displays side-by-side comparative table of Decision Tree baseline vs. Random Forest benchmark across Accuracy, Weighted Precision, Weighted Recall, and F1 Score.
-- Includes defensive validation of the Random Forest JSON specification, preventing silent zero displays.
-
-### 20.6 Phase 5 Per-Class Evaluation & Feature Importance Visualization
-- Displays a 6-row Per-Class Model Performance table (Precision, Recall, F1, Support) derived from validated test confusion matrices.
-- Renders a horizontal bar chart of the 12 Random Forest grouped feature importances sorted by Gini importance.
-- Includes exact required non-causal caption: *"Feature importance reflects how the model uses input variables for historical classification; it does not establish causation or physical traffic influence."*
-
-### 20.7 Phase 6 Dashboard Terminology Polish
-- Section 5 explicitly clarified: *"Batch historical classification on a held-out chronological test set — not a real-time or time-series traffic forecast."*
-- Section 6 explicitly titled: *"6. Rule-Based Traffic Advisory"*.
-- Data Sources & Limitations explicitly notes the intentional exclusion of GIS mapping due to lack of validated GPS coordinates.
-
-### 20.8 Section 9: Smart Route Recommendation (OpenStreetMap + OSRM Integration)
-- Introduces open-source road-network driving route calculation and interactive map visualization for arbitrary Bengaluru origins and destinations.
-- Resolves addresses through OpenStreetMap Nominatim with in-memory caching and compliant User-Agent headers.
-- Computes road-network driving paths, alternative candidates, distances, and estimated durations using the Open Source Routing Machine (OSRM).
-- Renders an interactive browser map via Folium and Leaflet using OpenStreetMap tiles with visually distinguished recommended and alternative route polylines.
-- 100% free and open-source: requires no API keys, no external cloud account, and no billing subscriptions.
-- Upholds strict scientific integrity: explicitly states live traffic is unavailable, does not fabricate congestion, and does not invent GPS coordinates for historical dataset corridors.
+### 20.4 Separation from Offline Analytics
+PySpark preprocessing, Spark SQL summaries, and model evaluation run as offline batch workflows. Their outputs are persisted under `data/output/` and served to the browser through FastAPI. Route geocoding/routing is a separate request path using public Nominatim and OSRM services.
 
 ## 21. Results Summary
 
@@ -532,17 +522,17 @@ All project phases have undergone rigorous verification:
 - **Phase 9 Initial Audit**: 112 out of 112 checks passed across raw datasets, processed tables, ML specifications, advisory summaries, and static charts.
 - **Phase 1 Validation**: Verified dynamic metric parsing without hardcoding; verified inclusive date filtering endpoints.
 - **Phase 2 Validation**: Verified dataset columns confirm absence of GPS coordinates; validated no fabricated coordinates were added.
-- **Phase 3 Validation**: Verified scenario filtering across all 6 controls; verified zero-record handling with `st.info`; confirmed no causal claims.
+- **Phase 3 Validation**: Verified scenario filtering across all 6 controls and zero-record handling; confirmed no causal claims.
 - **Phase 4 Validation**: Verified Random Forest script reproducibility, chronological split alignment, identical 61-dim feature vector, and non-zero benchmark metric parsing.
 - **Phase 5 Validation**: Verified mathematical accuracy of per-class Precision, Recall, F1 calculations against test confusion matrices; verified feature importance schema, numeric validity, non-negativity, and sum = 1.000001.
-- **Runtime Health**: Verified Streamlit server starts with HTTP 200 on health and main UI endpoints.
+- **Runtime Health**: The current web application exposes a FastAPI health endpoint at `/api/health`; the React frontend is served by Vite during local development.
 
 ## 23. Limitations
 
 - **Batch Granularity**: Observations are aggregated at the date level; hourly fluctuations and peak vs. off-peak hours are not represented.
 - **Not Real-Time**: The system performs offline batch processing; it does not connect to live sensors or GPS streams.
 - **Not Time-Series Forecasting**: Machine learning models classify historical records using contemporaneous features; they do not predict future traffic time steps.
-- **Absence of Validated GPS Coordinates**: No validated latitude/longitude coordinates exist in the primary source; geospatial mapping is intentionally excluded.
+- **Absence of Validated Historical GPS Coordinates**: The primary traffic source has no validated coordinates for mapping historical corridors to route geometry. The separate route interface uses Nominatim-resolved endpoint coordinates.
 - **Descriptive Scenario Explorer**: Differences observed in scenario analysis reflect historical correlations, not causal relationships.
 - **Non-Causal Feature Importance**: Feature importance quantifies how tree splits separate historical classes; it does not indicate physical traffic causation.
 - **Deterministic Advisory Heuristics**: Advisories are rule-based recommendations that do not model real-world municipal budgets, police staffing limits, or dynamic road closures.
@@ -550,8 +540,8 @@ All project phases have undergone rigorous verification:
 
 ## 24. Future Scope
 
-Subject to acquiring authorized real-time feeds and validated geospatial data:
-- Ingesting verified GIS boundary and node coordinates for interactive map rendering.
+Subject to acquiring authorized data and validated geospatial mappings:
+- Mapping historical corridor records to verified GIS road segments for carefully scoped spatial analysis.
 - Implementing sequential time-series forecasting (LSTM, Prophet) on high-frequency hourly sensor feeds.
 - Ingesting real-time streaming traffic feeds using Apache Kafka and Spark Structured Streaming.
 - Integrating GraphX / GraphFrames for corridor network connectivity and spillover congestion modeling.
@@ -559,7 +549,7 @@ Subject to acquiring authorized real-time feeds and validated geospatial data:
 
 ## 25. Conclusion
 
-This project delivers a complete, reproducible Big Data Analytics platform for Bengaluru traffic congestion. Combining PySpark distributed processing, Spark SQL aggregations, MLlib classification (Decision Tree baseline and Random Forest benchmark), deterministic rule-based advisories, and an interactive Streamlit dashboard with a Historical Scenario Analysis explorer, the platform balances analytical depth with strict scientific and engineering integrity.
+This project combines a reproducible historical analytics pipeline with a React/Vite frontend and FastAPI backend. PySpark, Spark SQL, and MLlib generate offline historical analytics and model outputs; FastAPI exposes route and persisted historical data services; React presents route comparison, map geometry, and historical corridor/advisory views. The route flow remains separate from historical corridor analytics.
 
 ## 26. Project Folder Structure
 
@@ -570,8 +560,13 @@ BDA project/
 │   ├── data_sources.json
 │   ├── integration_config.json
 │   └── preprocessing_config.json
-├── dashboard/
-│   └── app.py
+├── backend/
+│   └── app/
+│       ├── main.py
+│       ├── routes/
+│       ├── schemas/
+│       └── services/
+├── dashboard/              # Older Python dashboard code retained in the repository
 ├── data/
 │   ├── output/
 │   │   ├── advisory_output.csv
@@ -608,6 +603,12 @@ BDA project/
 │   └── random_forest_benchmark/
 │       └── model_specification.json
 ├── requirements.txt
+├── frontend/
+│   ├── package.json
+│   └── src/
+│       ├── App.jsx
+│       ├── components/
+│       └── utils/
 ├── src/
 │   ├── advisory/
 │   │   ├── advisory_engine.py
@@ -642,10 +643,10 @@ BDA project/
 └── validation.txt
 ```
 
-## 27. Smart Route Recommendation Module (OpenStreetMap + OSRM + Folium Stack)
+## 27. Route Search and Map (Nominatim + OSRM + React-Leaflet)
 
 ### 27.1 Module Purpose & Synopsis Alignment
-The project synopsis outlines corridor-level planning, travel congestion analysis, rule-based traffic advisory generation, and future route-level decision support. The Smart Route Recommendation module fulfills the route-level decision-support objective using a **100% free and open-source geospatial stack** consisting of OpenStreetMap, OSRM, and Folium.
+The route-search feature provides road-network route comparison using OpenStreetMap Nominatim, OSRM, and React-Leaflet. Public services have usage and availability policies; the project does not claim guaranteed service levels or zero operating cost for arbitrary deployment.
 
 The purpose of this module is **travel decision support**, not autonomous vehicular navigation or physical infrastructure control.
 
@@ -653,60 +654,35 @@ The purpose of this module is **travel decision support**, not autonomous vehicu
 The system maintains a strict architectural division between historical batch analytics and the open-source route recommendation layer:
 
 ```
-                 HISTORICAL BDA PIPELINE
-
-Traffic + Toll + Calendar
+Historical traffic + calendar
           ↓
-      Apache Spark
+   PySpark / Spark SQL / MLlib
           ↓
-      Spark SQL
+   Persisted CSV outputs
           ↓
- Congestion Analytics
-          ↓
-    Spark MLlib
-          ↓
-Congestion Classification
-          ↓
- Rule-Based Advisory
-          ↓
-     Streamlit
-
-
-                 ROUTE MODULE
-
-User Origin + Destination
-          ↓
- OpenStreetMap Geocoding (Nominatim)
-          ↓
-        OSRM
-          ↓
- Candidate Routes
-          ↓
- Route Comparison
-          ↓
- Recommended Route
-          ↓
- OpenStreetMap / Leaflet (Folium)
-          ↓
-     Streamlit
+ FastAPI on Uvicorn ←─────────────┐
+          ↕                       │
+ React + Vite                     │
+   ├── Historical corridor view   │
+   ├── Historical advisory view   │
+   └── React-Leaflet route map    │
+                                  │
+User From/To → Nominatim → FastAPI route service → OSRM
 ```
 
-The route recommendation module does **NOT** train on, modify, or merge into the historical Spark dataset. Historical analytics remain purely batch-oriented and descriptive.
+PySpark runs as an offline batch pipeline and writes persisted files. FastAPI serves these files for historical UI views and separately handles route requests. Route calculations do not consume or modify historical traffic data.
 
 ### 27.3 Open-Source Components Used
 1. **OpenStreetMap Nominatim Geocoding**:
    - Resolves human-readable addresses (e.g., 'Koramangala, Bengaluru') to geographic coordinates (`lat, lon`).
-   - Implements in-memory caching (`_GEOCODE_CACHE`) and descriptive `User-Agent` headers to respect Nominatim usage policies and avoid redundant requests across Streamlit reruns.
+   - Supports location search and geocoding for user-entered route endpoints.
 2. **Open Source Routing Machine (OSRM)**:
    - Driving routing engine operating on OpenStreetMap road-network graphs (`http://router.project-osrm.org/route/v1/driving`).
    - Retrieves distance in meters, estimated duration in seconds, road summary descriptions, and full GeoJSON geometry (`geometries=geojson`).
    - Requests alternative candidates (`alternatives=true`) where road topology supports multiple paths.
-3. **Folium & Leaflet**:
-   - Interactive map rendered directly in Streamlit via standard iframe components.
-   - Uses OpenStreetMap raster tiles.
-   - Plots the Recommended route in prominent blue (`#1a73e8`, weight 6) and alternative routes in dashed gray (`#6c757d`, weight 4).
-   - Places Origin ('A', Green) and Destination ('B', Red) markers with informative tooltips and popups.
-   - Automatically computes bounding boxes to fit the entire route journey.
+3. **Leaflet & React-Leaflet**:
+   - The React component `frontend/src/components/RouteMap.jsx` renders route polylines, origin/destination markers, and map tiles.
+   - Route geometry and map bounds come from the returned route response.
 
 ### 27.4 Zero Cost & No API Keys
 - **No Paid Cloud Account**: Requires no external cloud account, credit card, API key, or subscription.
@@ -720,8 +696,8 @@ The route recommendation module does **NOT** train on, modify, or merge into the
 
 ### 27.6 Transparent Recommendation Logic
 The recommendation logic is completely deterministic and transparent:
-1. Candidate routes returned by OSRM are ranked primarily by lowest estimated travel duration (`duration_seconds`).
-2. Close ties (durations within 60 seconds) are broken using shorter physical travel distance (`distance_km`).
+1. Candidate routes returned by OSRM are sorted by 60-second duration buckets, then by physical travel distance.
+2. This bucket-based rule is not a live congestion score or a pairwise assessment of route conditions.
 3. The top route is marked **Recommended** with the exact time/distance comparison vs alternatives. Other paths are labeled **Alternative**.
 4. When only one route exists, it is marked **Available Route** without claiming alternatives exist.
 5. The recommendation is explicitly attributed to OSRM road-network calculations and is never conflated with Spark ML predictions.
@@ -729,8 +705,7 @@ The recommendation logic is completely deterministic and transparent:
 ### 27.7 Critical Data Integrity: No Live Traffic & Zero Coordinate Fabrication
 - **No Live Traffic Feed**: Live/current traffic conditions and congestion overlays are **not** provided by this open-source implementation. OSRM calculates durations from static road-network topologies and default speed profiles. The system explicitly disclaims live traffic.
 - **Zero Coordinate Fabrication**: The historical dataset records traffic observations across 16 composite corridors without GPS coordinates. The system **never** fabricates latitude/longitude values or attempts unvalidated spatial joins between OpenStreetMap coordinates and historical records.
-- When expanding the "Historical Traffic Context" panel, the dashboard states:
-  > *"Historical congestion context is unavailable for this route because the project dataset does not contain a validated geographic mapping between route geometry and historical traffic corridors."*
+- The React historical traffic panel states that its corridor data is not specific to the selected route because the project dataset does not contain a validated geographic mapping between route geometry and historical corridors.
 
 ### 27.8 Error Handling Matrix
 The module handles all anticipated failure modes defensively:
@@ -739,21 +714,49 @@ The module handles all anticipated failure modes defensively:
 - **OSRM Network Timeout / Errors**: Handled defensively with custom timeout limits (15s) and user-facing alerts.
 - **No Drivable Routes**: Informs the user when no road connection exists between points.
 
-## 28. How to Run the Project
+## 28. Run the Web Application
 
-Run all commands from the project root `E:\BDA project`:
+The checked-in Windows layout has the Python virtual environment in the outer project directory and application source in the inner `BDA project` directory. Start the backend and frontend in separate PowerShell terminals.
 
-### 1. Install Dependencies
+### 1. Start the FastAPI backend
+
+In Terminal 1:
+
 ```powershell
-pip install -r requirements.txt
+cd "C:\Users\shivr\Downloads\BDA project"
+.\.venv\Scripts\Activate.ps1
+python -m uvicorn backend.app.main:app --app-dir "C:\Users\shivr\Downloads\BDA project\BDA project" --reload --port 8000
 ```
 
-### 2. Verify Spark Environment
+If the outer virtual environment does not exist yet, create it and install backend/analytics dependencies:
+
 ```powershell
-python -m tests.spark_smoke_test
+cd "C:\Users\shivr\Downloads\BDA project"
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r ".\BDA project\requirements.txt"
 ```
 
-### 3. End-to-End Pipeline Execution
+### 2. Start the React frontend
+
+In Terminal 2:
+
+```powershell
+cd "C:\Users\shivr\Downloads\BDA project\BDA project\frontend"
+npm install
+npm run dev
+```
+
+### 3. Local URLs
+
+- Frontend: `http://localhost:5173`
+- FastAPI Swagger UI: `http://localhost:8000/docs`
+- FastAPI health: `http://localhost:8000/api/health`
+
+### 4. Optional offline analytics pipeline
+
+Run these commands from the inner project directory with the Python environment active when regenerating persisted analytics/model outputs:
+
 ```powershell
 # Step 1: Validate and ingest raw traffic data
 python -m src.ingestion.validate_real_traffic_data
@@ -783,11 +786,6 @@ python -m src.advisory.prediction_advisory_pipeline
 python -m src.visualization.create_visualizations
 ```
 
-### 4. Launch the Streamlit Dashboard
-```powershell
-streamlit run dashboard/app.py
-```
-
 ## 28. Documentation Verification Checklist
 
 - [x] No invented datasets
@@ -796,7 +794,7 @@ streamlit run dashboard/app.py
 - [x] No target leakage
 - [x] Actual model configurations used (DT depth=5, RF 20 trees)
 - [x] Actual chronological test period documented (2024-02-01 to 2024-08-09, 1,791 rows)
-- [x] Actual dashboard functionality described (Scenario Analysis, Benchmark, Per-Class, Feature Importance)
+- [x] Current React/FastAPI route and historical corridor views documented
 - [x] Limitations documented (GPS, batch granularity, non-causal scenario/importance, contemporaneous features)
 - [x] Synthetic data clearly labelled
 - [x] Windows Spark model persistence limitation and JSON specification architecture documented
